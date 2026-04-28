@@ -147,6 +147,7 @@ export type Project = {
   accent: string;
   link?: string;
   github?: string;
+  image?: string;
 };
 
 export const projects: Project[] = [
@@ -198,6 +199,86 @@ export const projects: Project[] = [
     ],
     tech: ['React', 'TypeScript', 'Node.js', 'REST APIs', 'PostgreSQL', 'Auth'],
   },
+  {
+    title: 'BOL-LMS',
+    tagline: 'Modern Learning Management System',
+    period: 'Mar 2026 — Apr 2026',
+    category: 'Full-Stack Web',
+    accent: 'from-blue-500 to-indigo-500',
+    description: 'A comprehensive Learning Management System built for scale, enabling course management, student progress tracking, and interactive learning modules with a robust backend architecture.',
+    highlights: [
+      'Engineered interactive course modules and progress tracking systems.',
+      'Designed a secure and scalable backend for handling user sessions and data.',
+      'Ensured high accessibility and responsive design across all devices.'
+    ],
+    tech: ['JavaScript', 'Node.js', 'HTML/CSS', 'Full-Stack'],
+    github: 'https://github.com/sagnik22dey/BOL-LMS',
+    image: '/images/bol_lms.png'
+  },
+  {
+    title: 'RoasGuy',
+    tagline: 'High-performance marketing platform',
+    period: 'Dec 2025 — Apr 2026',
+    category: 'Full-Stack Web',
+    accent: 'from-orange-500 to-red-500',
+    description: 'Dynamic marketing and landing page application optimized for high conversion rates. Features sleek aesthetics, responsive layouts, and robust client-side routing.',
+    highlights: [
+      'Implemented responsive and high-fidelity UI components from design mockups.',
+      'Optimized asset delivery and page performance for maximum speed.',
+      'Integrated contact forms and call-to-action sections with seamless user experience.'
+    ],
+    tech: ['HTML', 'CSS', 'JavaScript', 'UI/UX Design'],
+    github: 'https://github.com/sagnik22dey/RoasGuy',
+    image: '/images/roasguy.png'
+  },
+  {
+    title: 'DecisionAlgo',
+    tagline: 'Algorithmic decision tree visualization',
+    period: 'Aug 2025 — Oct 2025',
+    category: 'AI / Computer Vision',
+    accent: 'from-green-500 to-emerald-500',
+    description: 'A redesigned platform to visualize and execute complex decision-making algorithms, providing a structured approach to solving programmatic and data-driven problems using Python.',
+    highlights: [
+      'Built efficient algorithmic pipelines for data processing and decision making.',
+      'Redesigned the entire web interface for better clarity and visualization.',
+      'Integrated Python logic seamlessly with the presentation layer.'
+    ],
+    tech: ['Python', 'Algorithms', 'Data Structures', 'Web Redesign'],
+    github: 'https://github.com/sagnik22dey/DecisionAlgo',
+    image: '/images/decision_algo.png'
+  },
+  {
+    title: 'CMS',
+    tagline: 'Project & Client Management System',
+    period: 'Jul 2025 — Jul 2025',
+    category: 'Full-Stack Web',
+    accent: 'from-teal-500 to-cyan-500',
+    description: 'A dedicated Customer Management System tailored for projects, clients, and developers. Streamlines the workflow of managing development tasks and client communication.',
+    highlights: [
+      'Developed a centralized dashboard for tracking project status and client details.',
+      'Focused on clear, accessible UI design for administrative users.',
+      'Architected a robust relational structure for managing developer and client interactions.'
+    ],
+    tech: ['HTML', 'CSS', 'JavaScript', 'Dashboard Design'],
+    github: 'https://github.com/sagnik22dey/CMS',
+    image: '/images/cms_project.png'
+  },
+  {
+    title: 'MedConscious',
+    tagline: 'Health-tech tracking & insights',
+    period: 'Apr 2025 — May 2025',
+    category: 'Full-Stack',
+    accent: 'from-sky-500 to-blue-600',
+    description: 'A modern web application aimed at medical consciousness and health tracking. Features data visualization, analytics, and abstract health metrics integration.',
+    highlights: [
+      'Utilized TypeScript to build a type-safe and reliable application architecture.',
+      'Implemented complex data tracking for health and wellness metrics.',
+      'Designed a soothing, user-friendly interface optimized for health-tech use cases.'
+    ],
+    tech: ['TypeScript', 'Frontend', 'Health Tech', 'Analytics'],
+    github: 'https://github.com/sagnik22dey/MedConscious',
+    image: '/images/medconscious.png'
+  }
 ];
 
 export const education = [
