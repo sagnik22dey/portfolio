@@ -22,23 +22,14 @@ export default function Navbar() {
   }, []);
 
   return (
-    <motion.header
-      initial={{ y: -40, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
+    <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'backdrop-blur-xl bg-[#09090f]/70 border-b border-white/10'
-          : 'bg-transparent'
+        scrolled ? 'bg-paper-100/85 backdrop-blur-md border-b-2 border-ink/15' : 'bg-transparent'
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
-        <a
-          href="#top"
-          className="font-mono text-sm font-semibold tracking-wider text-white flex items-center gap-2"
-        >
-          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-brand-500 to-accent-cyan animate-pulse" />
-          sagnik.dev
+        <a href="#top" className="font-hand text-3xl text-ink leading-none">
+          Sagnik<span className="text-accent">.</span>
         </a>
 
         <ul className="hidden md:flex items-center gap-1">
@@ -46,7 +37,7 @@ export default function Navbar() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="px-4 py-2 text-sm text-slate-300 hover:text-white rounded-full hover:bg-white/5 transition"
+                className="px-4 py-2 text-sm font-medium text-ink-soft hover:text-accent transition rounded-full"
               >
                 {l.label}
               </a>
@@ -59,11 +50,11 @@ export default function Navbar() {
         </a>
 
         <button
-          className="md:hidden p-2 text-white"
+          className="md:hidden p-2 text-ink"
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}
         >
-          {open ? <X size={22} /> : <Menu size={22} />}
+          {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </nav>
 
@@ -73,7 +64,7 @@ export default function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden overflow-hidden border-t border-white/10 bg-[#09090f]/95 backdrop-blur-xl"
+            className="md:hidden overflow-hidden border-t-2 border-ink/15 bg-paper-100/95 backdrop-blur-md"
           >
             <ul className="px-6 py-4 flex flex-col gap-1">
               {links.map((l) => (
@@ -81,7 +72,7 @@ export default function Navbar() {
                   <a
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="block px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg"
+                    className="block px-4 py-3 text-ink-soft hover:text-accent hover:bg-paper-200 rounded-lg transition"
                   >
                     {l.label}
                   </a>
@@ -100,6 +91,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 }

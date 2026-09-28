@@ -4,50 +4,48 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        hand: ['"Caveat"', 'cursive'],
       },
       colors: {
-        brand: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#7c3aed',
-          700: '#6d28d9',
-          900: '#4c1d95',
+        paper: {
+          50: '#fdfcf8',
+          100: '#faf6ec',
+          200: '#f3ecd9',
+          300: '#e9dfc4',
+          400: '#d9cba6',
+        },
+        ink: {
+          DEFAULT: '#2b2620',
+          soft: '#4a423a',
+          faint: '#7a6f62',
         },
         accent: {
-          cyan: '#22d3ee',
-          violet: '#a78bfa',
-          pink: '#f472b6',
+          DEFAULT: '#c2410c',
+          soft: '#e8763f',
+          sage: '#6b7c5f',
+          clay: '#a8563a',
         },
       },
       backgroundImage: {
-        'grid-dark': "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)",
-        'radial-fade': 'radial-gradient(circle at 50% 0%, rgba(139,92,246,0.25), transparent 60%)',
+        'paper-fade': 'radial-gradient(circle at 50% 0%, rgba(194,65,12,0.08), transparent 55%)',
+      },
+      boxShadow: {
+        sketch: '3px 3px 0 0 rgba(43,38,32,0.9)',
+        'sketch-sm': '2px 2px 0 0 rgba(43,38,32,0.85)',
+        paper: '0 12px 40px -12px rgba(43,38,32,0.25)',
       },
       animation: {
-        'gradient-x': 'gradient-x 8s ease infinite',
         'float': 'float 6s ease-in-out infinite',
-        'glow': 'glow 3s ease-in-out infinite alternate',
       },
       keyframes: {
-        'gradient-x': {
-          '0%, 100%': { backgroundPosition: '0% 50%' },
-          '50%': { backgroundPosition: '100% 50%' },
-        },
         'float': {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-12px)' },
-        },
-        'glow': {
-          '0%': { boxShadow: '0 0 20px rgba(139,92,246,0.4)' },
-          '100%': { boxShadow: '0 0 40px rgba(34,211,238,0.6)' },
+          '0%, 100%': { transform: 'translateY(0) rotate(-1deg)' },
+          '50%': { transform: 'translateY(-12px) rotate(1deg)' },
         },
       },
     },

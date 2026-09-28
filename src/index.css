@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,20 +7,21 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-[#09090f] text-slate-200 font-sans antialiased selection:bg-brand-600/40 selection:text-white;
+    @apply bg-paper-100 text-ink font-sans antialiased selection:bg-accent/20 selection:text-ink;
   }
   * {
     -webkit-tap-highlight-color: transparent;
   }
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 11px;
+    height: 11px;
   }
   ::-webkit-scrollbar-track {
-    background: #09090f;
+    background: #f3ecd9;
   }
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #7c3aed, #22d3ee);
+    background: #c2410c;
+    border: 3px solid #f3ecd9;
     border-radius: 8px;
   }
 }
@@ -30,37 +29,48 @@
 @layer components {
   .section {
     @apply max-w-6xl mx-auto px-6 md:px-10 py-20 md:py-28;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 720px;
   }
   .section-title {
-    @apply text-3xl md:text-4xl font-bold text-white tracking-tight;
+    @apply font-serif text-4xl md:text-5xl lg:text-6xl font-semibold text-ink tracking-tight leading-[1.1];
   }
   .section-eyebrow {
-    @apply inline-block text-xs font-mono uppercase tracking-[0.2em] text-brand-400 mb-3;
+    @apply inline-block font-hand text-2xl text-accent -rotate-2 mb-2;
   }
-  .glass {
-    @apply bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl;
+  .accent-text {
+    @apply text-accent italic;
   }
-  .glass-hover {
-    @apply transition-all duration-300 hover:border-brand-500/50 hover:bg-white/[0.05] hover:-translate-y-1;
+  .paper-card {
+    @apply bg-paper-50 border-2 border-ink rounded-[14px] shadow-sketch;
   }
-  .gradient-text {
-    @apply bg-gradient-to-r from-brand-400 via-accent-cyan to-accent-pink bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x;
+  .paper-card-hover {
+    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-[5px_5px_0_0_rgba(43,38,32,0.9)];
   }
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-brand-600 to-accent-cyan text-white font-semibold shadow-lg shadow-brand-600/25 hover:shadow-accent-cyan/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200;
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-full bg-ink text-paper-50 font-medium border-2 border-ink shadow-sketch-sm hover:-translate-y-0.5 hover:shadow-sketch active:translate-y-0 active:shadow-none transition-all duration-150;
   }
   .btn-ghost {
-    @apply inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 text-slate-200 font-semibold hover:bg-white/5 hover:border-white/30 transition-all duration-200;
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-full bg-paper-50 text-ink font-medium border-2 border-ink shadow-sketch-sm hover:-translate-y-0.5 hover:shadow-sketch active:translate-y-0 active:shadow-none transition-all duration-150;
   }
   .chip {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-white/[0.04] border border-white/10 text-slate-300;
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-paper-200 border border-ink/40 text-ink-soft;
   }
-  .grid-bg {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-    background-size: 48px 48px;
+  .underline-sketch {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5 C30 1 60 8 90 3 S118 2 118 4' fill='none' stroke='%23c2410c' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: 100% 8px;
+    padding-bottom: 6px;
   }
+}
+
+.paper-texture {
+  background-color: #faf6ec;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(217,203,166,0.25) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(217,203,166,0.2) 0%, transparent 40%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
 .noise::before {
@@ -68,6 +78,66 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.03;
+  opacity: 0.06;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes tearLeft {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+  20% {
+    transform: translateX(-4%) rotate(-0.8deg);
+  }
+  100% {
+    transform: translateX(-115%) rotate(-6deg) scale(0.97);
+    opacity: 0;
+  }
+}
+@keyframes tearRight {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+  20% {
+    transform: translateX(4%) rotate(0.8deg);
+  }
+  100% {
+    transform: translateX(115%) rotate(6deg) scale(0.97);
+    opacity: 0;
+  }
+}
+@keyframes tearGlow {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.1);
+  }
+  35% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(2.5);
+  }
+}
+@keyframes quillBob {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(4deg);
+  }
 }

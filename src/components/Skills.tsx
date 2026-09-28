@@ -1,43 +1,34 @@
-import { motion } from 'framer-motion';
+import { useReveal } from '../hooks/useReveal';
 import { skills } from '../data/portfolio';
 
 export default function Skills() {
+  const scope = useReveal<HTMLElement>('#skills [data-reveal]');
+
   return (
-    <section id="skills" className="section relative">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.6 }}
-        className="text-center md:text-left mb-12"
-      >
-        <span className="section-eyebrow">// tech stack</span>
+    <section id="skills" ref={scope} className="section relative">
+      <div data-reveal className="mb-12">
+        <span className="section-eyebrow">tech stack</span>
         <h2 className="section-title">
-          Tools I use to <span className="gradient-text">build & ship</span>.
+          Tools I use to <span className="accent-text">build &amp; ship</span>.
         </h2>
-        <p className="mt-3 text-slate-400 max-w-2xl">
+        <p className="mt-4 text-lg text-ink-soft max-w-2xl font-serif">
           A polyglot stack spanning product engineering, AI integrations, and quality automation.
         </p>
-      </motion.div>
+      </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {skills.map((cat, i) => {
+        {skills.map((cat) => {
           const Icon = cat.icon;
           return (
-            <motion.div
+            <div
               key={cat.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="glass glass-hover p-6 group"
+              data-reveal
+              className="paper-card paper-card-hover p-6 group"
             >
-              <div
-                className={`w-11 h-11 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 transition-transform`}
-              >
-                <Icon size={22} className="text-white" />
+              <div className="w-11 h-11 rounded-xl bg-ink flex items-center justify-center mb-4 group-hover:rotate-[-6deg] transition-transform">
+                <Icon size={22} className="text-paper-50" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-3">{cat.title}</h3>
+              <h3 className="font-serif text-2xl font-semibold text-ink mb-3">{cat.title}</h3>
               <div className="flex flex-wrap gap-2">
                 {cat.skills.map((s) => (
                   <span key={s} className="chip">
@@ -45,7 +36,7 @@ export default function Skills() {
                   </span>
                 ))}
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </div>

@@ -1,109 +1,174 @@
-import { motion } from 'framer-motion';
-import { ArrowUpRight, Sparkle } from 'lucide-react';
+import { ArrowUpRight, Users } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
-import { projects } from '../data/portfolio';
+import { useReveal } from '../hooks/useReveal';
+import { projects, type Project } from '../data/portfolio';
+
+const categoryOrder = [
+  'Backend / Infra',
+  'AI / ML',
+  'AI / Computer Vision',
+  'Full-Stack Web',
+  'Full-Stack',
+  'Frontend / UI',
+] as const;
+
+/** Live App / GitHub buttons for a project when present. */
+function ProjectLinks({ p }: { p: Project }) {
+  if (!p.link && !p.github) return null;
+  return (
+    <div className="flex items-center gap-3">
+      {p.link && (
+        <a href={p.link} target="_blank" rel="noreferrer" className="btn-primary !py-2 !px-5 text-sm">
+          Live App <ArrowUpRight size={16} />
+        </a>
+      )}
+      {p.github && (
+        <a href={p.github} target="_blank" rel="noreferrer" className="btn-ghost !py-2 !px-5 text-sm">
+          <FaGithub size={18} /> GitHub
+        </a>
+      )}
+    </div>
+  );
+}
+
+/** Category chip, optional team tag, and period line for a project. */
+function MetaRow({ p }: { p: Project }) {
+  return (
+    <div className="flex flex-wrap items-center gap-2.5">
+      <span className="chip !bg-ink !text-paper-50 !border-ink uppercase tracking-wide">
+        {p.category}
+      </span>
+      {p.team && (
+        <span className="chip !border-accent/60 !text-accent">
+          <Users size={12} /> Team
+        </span>
+      )}
+      <span className="text-xs text-ink-faint font-medium">{p.period}</span>
+    </div>
+  );
+}
+
+/** Large, wide card used for the flagship featured projects. */
+function FeaturedCard({ p }: { p: Project }) {
+  return (
+    <article data-reveal className="paper-card paper-card-hover p-7 md:p-9 flex flex-col">
+      <MetaRow p={p} />
+      <h3 className="mt-4 font-serif text-4xl font-semibold text-ink">{p.title}</h3>
+      <p className="mt-1 text-base text-accent font-medium italic">{p.tagline}</p>
+      <p className="mt-4 text-ink-soft leading-relaxed font-serif text-lg max-w-3xl">
+        {p.description}
+      </p>
+      <ul className="mt-5 grid md:grid-cols-2 gap-x-8 gap-y-2 mb-6">
+        {p.highlights.map((h) => (
+          <li key={h} className="flex gap-3 text-ink-soft text-sm leading-relaxed">
+            <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
+            <span>{h}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-5 border-t-2 border-ink/15">
+        <div className="flex flex-wrap gap-2">
+          {p.tech.map((t) => (
+            <span key={t} className="chip">
+              {t}
+            </span>
+          ))}
+        </div>
+        <ProjectLinks p={p} />
+      </div>
+    </article>
+  );
+}
+
+/** Standard grid card for non-featured projects. */
+function ProjectCard({ p }: { p: Project }) {
+  return (
+    <article data-reveal className="paper-card paper-card-hover overflow-hidden flex flex-col">
+      {p.image && (
+        <div className="aspect-[16/10] overflow-hidden border-b-2 border-ink bg-paper-200">
+          <img
+            src={p.image}
+            alt={`Screenshot of the ${p.title} project — ${p.tagline}`}
+            loading="lazy"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+      <div className="p-6 md:p-7 flex flex-col flex-grow">
+        <MetaRow p={p} />
+        <h3 className="mt-4 font-serif text-3xl font-semibold text-ink">{p.title}</h3>
+        <p className="mt-1 text-sm text-accent font-medium italic">{p.tagline}</p>
+        <p className="mt-4 text-ink-soft leading-relaxed font-serif text-lg">{p.description}</p>
+        <ul className="mt-5 space-y-2 mb-6 flex-grow">
+          {p.highlights.map((h) => (
+            <li key={h} className="flex gap-3 text-ink-soft text-sm leading-relaxed">
+              <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
+              <span>{h}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-auto flex flex-col gap-4 pt-5 border-t-2 border-ink/15">
+          <div className="flex flex-wrap gap-2">
+            {p.tech.map((t) => (
+              <span key={t} className="chip">
+                {t}
+              </span>
+            ))}
+          </div>
+          <ProjectLinks p={p} />
+        </div>
+      </div>
+    </article>
+  );
+}
 
 export default function Projects() {
+  const scope = useReveal<HTMLElement>('#projects [data-reveal]');
+
+  const featured = projects.filter((p) => p.featured);
+  const rest = projects.filter((p) => !p.featured);
+  const groups = categoryOrder
+    .map((cat) => ({ cat, items: rest.filter((p) => p.category === cat) }))
+    .filter((g) => g.items.length > 0);
+
   return (
-    <section id="projects" className="section relative">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.6 }}
-        className="mb-12"
-      >
-        <span className="section-eyebrow">// featured projects</span>
+    <section id="projects" ref={scope} className="section relative">
+      <div data-reveal className="mb-12">
+        <span className="section-eyebrow">selected work</span>
         <h2 className="section-title">
-          Things I've <span className="gradient-text">built</span>.
+          Things I've <span className="accent-text">built</span>.
         </h2>
-        <p className="mt-3 text-slate-400 max-w-2xl">
-          Selected work spanning full-stack mobile/web apps and AI-powered features.
+        <p className="mt-4 text-lg text-ink-soft max-w-2xl font-serif">
+          Full-stack apps, AI pipelines, and backend infrastructure — ordered by scope, from flagship
+          systems to focused builds.
         </p>
-      </motion.div>
-
-      <div className="grid gap-6">
-        {projects.map((p, i) => (
-          <motion.article
-            key={p.title}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="glass glass-hover p-6 md:p-8 relative overflow-hidden group"
-          >
-            {/* Accent glow */}
-            <div
-              className={`pointer-events-none absolute -top-32 -right-32 w-80 h-80 rounded-full bg-gradient-to-br ${p.accent} opacity-10 blur-3xl group-hover:opacity-20 transition-opacity`}
-            />
-
-            <div className="relative flex flex-col h-full">
-              <div className="flex flex-wrap items-center gap-3">
-                <span
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider bg-gradient-to-r ${p.accent} text-white shadow`}
-                >
-                  <Sparkle size={12} /> {p.category}
-                </span>
-                <span className="text-xs font-mono text-slate-500">{p.period}</span>
-              </div>
-
-              <h3 className="mt-4 text-2xl md:text-3xl font-bold text-white">
-                {p.title}
-              </h3>
-              <p className="mt-1 text-sm text-brand-400 font-medium">{p.tagline}</p>
-
-              <p className="mt-4 text-slate-300 leading-relaxed">{p.description}</p>
-
-              <ul className="mt-5 space-y-2 mb-8 flex-grow">
-                {p.highlights.map((h) => (
-                  <li
-                    key={h}
-                    className="flex gap-3 text-slate-300 text-sm leading-relaxed"
-                  >
-                    <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-brand-400 to-accent-cyan" />
-                    <span>{h}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-6 border-t border-white/5">
-                <div className="flex flex-wrap gap-2">
-                  {p.tech.map((t) => (
-                    <span key={t} className="chip">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                {(p.link || p.github) && (
-                  <div className="flex items-center gap-3 shrink-0">
-                    {p.link && (
-                      <a
-                        href={p.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn-primary !py-2 !px-5 text-sm"
-                      >
-                        Live App <ArrowUpRight size={16} />
-                      </a>
-                    )}
-                    {p.github && (
-                      <a
-                        href={p.github}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn-ghost !py-2 !px-5 text-sm"
-                      >
-                        <FaGithub size={18} /> GitHub
-                      </a>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </motion.article>
-        ))}
       </div>
+
+      {featured.length > 0 && (
+        <div className="mb-14">
+          <h3 data-reveal className="font-hand text-3xl text-accent mb-5">
+            ★ Flagship projects
+          </h3>
+          <div className="grid gap-6">
+            {featured.map((p) => (
+              <FeaturedCard key={p.title} p={p} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {groups.map((g) => (
+        <div key={g.cat} className="mb-12">
+          <h3 data-reveal className="font-hand text-3xl text-ink mb-5">
+            {g.cat}
+          </h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            {g.items.map((p) => (
+              <ProjectCard key={p.title} p={p} />
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
   );
 }
