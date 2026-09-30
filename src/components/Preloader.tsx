@@ -112,50 +112,48 @@ export default function Preloader({ onEnter }: Props) {
         className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-6"
         style={tearing ? { animation: 'tearCard .45s ease-out forwards' } : undefined}
       >
-        <div className="max-w-md w-full paper-card p-8 md:p-10 relative overflow-hidden shadow-2xl border-2 border-ink bg-[#faf6ec]">
-          <div className="absolute top-2 left-2 text-ink/30 font-serif text-sm">✦</div>
-          <div className="absolute top-2 right-2 text-ink/30 font-serif text-sm">✦</div>
-          <div className="absolute bottom-2 left-2 text-ink/30 font-serif text-sm">✦</div>
-          <div className="absolute bottom-2 right-2 text-ink/30 font-serif text-sm">✦</div>
+        <div className="max-w-md w-full p-8 md:p-10 relative overflow-hidden shadow-2xl border-gold-glow hud-backdrop bg-[#161412]/95 text-stone-200">
+          <div className="absolute top-2.5 left-2.5 text-amber-400/60 font-mono text-xs">┌</div>
+          <div className="absolute top-2.5 right-2.5 text-amber-400/60 font-mono text-xs">┐</div>
+          <div className="absolute bottom-2.5 left-2.5 text-amber-400/60 font-mono text-xs">└</div>
+          <div className="absolute bottom-2.5 right-2.5 text-amber-400/60 font-mono text-xs">┘</div>
 
-          <span className="font-hand text-2xl md:text-3xl text-accent -rotate-2 inline-block">
-            Illuminating the Codex
+          <span className="font-hand text-2xl md:text-3xl text-amber-400 -rotate-2 inline-block">
+            Illuminating the Cavern
           </span>
 
-          <h1 className="font-serif text-4xl md:text-5xl font-semibold text-ink mt-1 tracking-tight">
+          <h1 className="font-serif text-4xl md:text-5xl font-medium text-cave-chalk mt-1 tracking-tight">
             Sagnik's Corridor
           </h1>
 
-          <p className="mt-3 font-serif text-sm md:text-base text-ink-soft leading-relaxed">
-            Preloading Renaissance draughts, stone masonry strata &amp; subterranean acoustics.
+          <p className="mt-3 font-serif text-sm md:text-base text-stone-400 leading-relaxed">
+            Preloading stone masonry strata, timber shoring bents &amp; subterranean acoustics.
           </p>
 
           <div className="mt-8 flex flex-col items-center">
             <div className="flex items-baseline gap-1 font-serif">
               <span
                 ref={pctTextRef}
-                className="text-5xl md:text-6xl font-bold text-ink tabular-nums tracking-tight"
+                className="text-5xl md:text-6xl font-bold text-amber-300 tabular-nums tracking-tight"
               >
                 {displayProgress}
               </span>
-              <span className="text-2xl font-semibold text-accent">%</span>
+              <span className="text-2xl font-semibold text-amber-500">%</span>
             </div>
 
-            <div className="w-full mt-4 h-3 bg-paper-200 rounded-full border border-ink/40 p-0.5 overflow-hidden">
+            <div className="w-full mt-4 h-2.5 bg-[#0f1012] border border-amber-900/50 p-0.5 overflow-hidden">
               <div
                 ref={barRef}
-                className="h-full rounded-full bg-accent transition-all duration-75 ease-out"
+                className="h-full bg-gradient-to-r from-amber-700 via-amber-500 to-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.5)] transition-all duration-75 ease-out"
                 style={{
                   width: `${displayProgress}%`,
-                  backgroundImage:
-                    'repeating-linear-gradient(45deg, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.2) 6px, transparent 6px, transparent 12px)',
                 }}
               />
             </div>
 
-            <div className="mt-3.5 flex items-center justify-center gap-2 text-xs md:text-sm font-hand text-ink-soft truncate max-w-full px-2">
+            <div className="mt-3.5 flex items-center justify-center gap-2 text-xs md:text-sm font-mono text-stone-400 truncate max-w-full px-2">
               <span
-                className="inline-block text-accent"
+                className="inline-block text-amber-400"
                 style={{ animation: 'quillBob 1.2s ease-in-out infinite' }}
               >
                 ✎
@@ -164,17 +162,17 @@ export default function Preloader({ onEnter }: Props) {
             </div>
           </div>
 
-          <div className="mt-8 pt-4 border-t border-ink/15 flex flex-col items-center gap-2">
+          <div className="mt-8 pt-4 border-t border-amber-900/30 flex flex-col items-center gap-2">
             {displayProgress >= 100 ? (
               <button
                 onClick={() => setTearing(true)}
-                className="btn-primary w-full justify-center !py-2.5 text-sm animate-pulse"
+                className="w-full justify-center py-2.5 px-4 text-xs font-mono uppercase tracking-widest font-semibold bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-[0_0_16px_rgba(245,158,11,0.35)] transition-all active:scale-95 animate-pulse"
               >
                 Entering the Cavern...
               </button>
             ) : (
-              <span className="text-xs font-serif italic text-ink/60">
-                Please wait while heavy assets are downloaded to memory...
+              <span className="text-xs font-serif italic text-stone-400">
+                Please wait while subterranean assets are loaded...
               </span>
             )}
           </div>

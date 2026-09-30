@@ -16,18 +16,18 @@ type BayMeshProps = {
   index: number;
   zOffset: number;
   onOpen: (bay: Bay) => void;
+  openingBayId?: string | null;
 };
 
 const BAY_POSTER_MAP: Record<string, string> = {
   about: '/images/profile_image.webp',
   projects: '/images/sketches/gallery_corridor.webp',
-  skills: '/images/sketches/decision_algo.webp',
-  experience: '/images/sketches/cms.webp',
+  studio: '/images/sketches/decision_algo.webp',
   contact: '/images/sketches/roasguy.webp',
 };
 
 /** A cavern stone-arched portal with a swinging timber door and an illuminated deep 3D room chamber. */
-function DoorBay({ bay, index, zOffset, onOpen }: BayMeshProps) {
+function DoorBay({ bay, index, zOffset, onOpen, openingBayId }: BayMeshProps) {
   const [hovered, setHovered] = useState(false);
   const doorRef = useRef<THREE.Group>(null);
   const signRef = useRef<THREE.Group>(null);
@@ -71,8 +71,9 @@ function DoorBay({ bay, index, zOffset, onOpen }: BayMeshProps) {
 
   useFrame((state) => {
     if (doorRef.current) {
-      const target = hovered ? -1.45 : 0;
-      doorRef.current.rotation.y = THREE.MathUtils.lerp(doorRef.current.rotation.y, target, 0.08);
+      const isOpening = openingBayId === bay.id;
+      const target = isOpening ? -2.2 : hovered ? -1.45 : 0;
+      doorRef.current.rotation.y = THREE.MathUtils.lerp(doorRef.current.rotation.y, target, isOpening ? 0.12 : 0.08);
     }
     if (signRef.current) {
       signRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 1.1 + index) * 0.04;
@@ -198,10 +199,13 @@ function DoorBay({ bay, index, zOffset, onOpen }: BayMeshProps) {
   );
 }
 
-type BaysProps = { onOpen: (bay: Bay) => void };
+type BaysProps = {
+  onOpen: (bay: Bay) => void;
+  openingBayId?: string | null;
+};
 
 /** All corridor portal bays rendered across repeating cycles for the infinite loop. */
-export default function Bays({ onOpen }: BaysProps) {
+export default function Bays({ onOpen, openingBayId }: BaysProps) {
   return (
     <group>
       {CYCLES.map((cycleOffset) =>
@@ -212,6 +216,7 @@ export default function Bays({ onOpen }: BaysProps) {
             index={i}
             zOffset={cycleOffset}
             onOpen={onOpen}
+            openingBayId={openingBayId}
           />
         ))
       )}

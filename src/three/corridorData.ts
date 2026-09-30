@@ -1,5 +1,7 @@
 import { projects, skills, personal, about, experiences } from '../data/portfolio';
 
+export type RoomId = 'about' | 'gallery' | 'studio' | 'contact';
+
 export type Bay = {
   id: string;
   side: 'left' | 'right';
@@ -7,6 +9,7 @@ export type Bay = {
   title: string;
   subtitle: string;
   accent: string;
+  roomId: RoomId;
 };
 
 export const bays: Bay[] = [
@@ -17,6 +20,7 @@ export const bays: Bay[] = [
     title: 'About',
     subtitle: personal.title,
     accent: '#c2410c',
+    roomId: 'about',
   },
   {
     id: 'projects',
@@ -25,30 +29,25 @@ export const bays: Bay[] = [
     title: 'The Gallery',
     subtitle: `${projects.length} projects`,
     accent: '#a8563a',
+    roomId: 'gallery',
   },
   {
-    id: 'skills',
+    id: 'studio',
     side: 'left',
     kind: 'room',
-    title: 'Skills',
-    subtitle: `${skills.length} disciplines`,
+    title: 'The Studio',
+    subtitle: `${skills.length} disciplines · ${experiences.length} roles`,
     accent: '#6b7c5f',
-  },
-  {
-    id: 'experience',
-    side: 'right',
-    kind: 'room',
-    title: 'Experience',
-    subtitle: experiences[0]?.company ?? '',
-    accent: '#a8563a',
+    roomId: 'studio',
   },
   {
     id: 'contact',
-    side: 'left',
+    side: 'right',
     kind: 'room',
     title: 'Contact',
     subtitle: "Let's build",
     accent: '#c2410c',
+    roomId: 'contact',
   },
 ];
 

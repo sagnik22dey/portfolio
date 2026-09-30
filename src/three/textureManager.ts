@@ -26,14 +26,17 @@ export const ALL_PRELOAD_ITEMS: PreloadItem[] = [
   { url: '/images/sketches/medconscious.webp', label: 'Cardiovascular Pulse Rhythm Study' },
 ];
 
-/** Retrieve a cached texture or load it with optimal color space and anisotropy. */
+/** Retrieve a cached texture or load it with optimal color space, 16x anisotropy, and crisp filtering. */
 export function getCachedTexture(url: string): THREE.Texture {
   const cached = textureCache.get(url);
   if (cached) return cached;
 
   const tex = loader.load(url);
   tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = 4;
+  tex.anisotropy = 16;
+  tex.generateMipmaps = true;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.magFilter = THREE.LinearFilter;
   textureCache.set(url, tex);
   return tex;
 }

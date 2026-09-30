@@ -11,16 +11,30 @@ import Footer from './components/Footer';
 import BackgroundEffects from './components/BackgroundEffects';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 
-const CorridorExperience = lazy(() => import('./components/CorridorExperience'));
+const ArchipelagoExperience = lazy(() => import('./archipelago/ArchipelagoExperience'));
 
-/** True on touch / low-core / small-screen / reduced-motion devices where the 3D corridor is skipped. */
+const BOOT_FLAG = 'arch-booting';
+const FAIL_FLAG = 'arch-failed';
+
+/** True when the 3D view must be skipped: reduced motion, no WebGL, or a previous 3D boot crashed the tab. */
 function prefersClassic(): boolean {
   if (typeof window === 'undefined') return true;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const smallScreen = window.innerWidth < 820;
-  const weakCPU =
-    typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 4;
-  return reduced || smallScreen || weakCPU;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+  if (sessionStorage.getItem(FAIL_FLAG)) return true;
+  if (localStorage.getItem(BOOT_FLAG)) {
+    localStorage.removeItem(BOOT_FLAG);
+    sessionStorage.setItem(FAIL_FLAG, '1');
+    return true;
+  }
+  try {
+    const c = document.createElement('canvas');
+    const gl = (c.getContext('webgl2') || c.getContext('webgl')) as WebGLRenderingContext | null;
+    if (!gl) return true;
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+  } catch {
+    return true;
+  }
+  return false;
 }
 
 function ClassicSite({ onEnter3D }: { onEnter3D: (() => void) | null }) {
@@ -32,9 +46,9 @@ function ClassicSite({ onEnter3D }: { onEnter3D: (() => void) | null }) {
       {onEnter3D && (
         <button
           onClick={onEnter3D}
-          className="fixed bottom-5 right-5 z-40 btn-primary !py-2.5 !px-5 text-sm shadow-sketch"
+          className="btn-primary fixed bottom-5 right-5 z-40 !px-5 !py-2.5 text-sm"
         >
-          Enter 3D corridor
+          Fly to the islands
         </button>
       )}
       <main>
@@ -66,17 +80,16 @@ function ClassicSiteSeo() {
   );
 }
 
-function App() {
-  const [mode, setMode] = useState<'loading' | 'corridor' | 'classic'>('loading');
-  const [canRun3D, setCanRun3D] = useState(false);
+function initialView(): { mode: 'corridor' | 'classic'; canRun3D: boolean } {
+  const classic = prefersClassic();
+  const saved = localStorage.getItem('view-mode');
+  return { mode: saved === 'classic' || classic ? 'classic' : 'corridor', canRun3D: !classic };
+}
 
-  useEffect(() => {
-    const classic = prefersClassic();
-    setCanRun3D(!classic);
-    const saved = localStorage.getItem('view-mode');
-    if (saved === 'classic' || classic) setMode('classic');
-    else setMode('corridor');
-  }, []);
+function App() {
+  const [initial] = useState(initialView);
+  const [mode, setMode] = useState<'loading' | 'corridor' | 'classic'>(initial.mode);
+  const [canRun3D, setCanRun3D] = useState(initial.canRun3D);
 
   const toClassic = () => {
     localStorage.setItem('view-mode', 'classic');
@@ -86,6 +99,22 @@ function App() {
     localStorage.setItem('view-mode', 'corridor');
     setMode('corridor');
   };
+  const onFail = () => {
+    sessionStorage.setItem(FAIL_FLAG, '1');
+    localStorage.removeItem(BOOT_FLAG);
+    setCanRun3D(false);
+    setMode('classic');
+  };
+
+  useEffect(() => {
+    if (mode !== 'corridor') return;
+    localStorage.setItem(BOOT_FLAG, '1');
+    const t = window.setTimeout(() => localStorage.removeItem(BOOT_FLAG), 8000);
+    return () => {
+      window.clearTimeout(t);
+      localStorage.removeItem(BOOT_FLAG);
+    };
+  }, [mode]);
 
   if (mode === 'loading') {
     return <div className="fixed inset-0 bg-paper-100" aria-hidden="true" />;
@@ -94,7 +123,7 @@ function App() {
   if (mode === 'corridor') {
     return (
       <Suspense fallback={<div className="fixed inset-0 bg-paper-100" />}>
-        <CorridorExperience onExit={toClassic} />
+        <ArchipelagoExperience onExit={toClassic} onFail={onFail} />
         <ClassicSiteSeo />
       </Suspense>
     );

@@ -195,6 +195,7 @@ export function useCorridorRig({ onProgress, enabled = true }: RigOptions) {
   }, []);
 
   useFrame((_, delta) => {
+    if (!enabledRef.current) return;
     const d = Math.min(delta, 1 / 30);
     const zFactor = 1 - Math.pow(1 - SMOOTHING, d * 60);
     const pFactor = 1 - Math.pow(1 - SMOOTHING * 0.85, d * 60);

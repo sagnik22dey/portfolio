@@ -3,13 +3,13 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { CORRIDOR_START_Z, corridorEndZ } from './corridorData';
 
-const BASE_COUNT = 340;
+const BASE_COUNT = 80;
 
 /** Slow-drifting dust motes catching the corridor light for atmosphere. */
 export default function Particles({ scale = 1 }: { scale?: number }) {
   const ref = useRef<THREE.Points>(null);
   const length = CORRIDOR_START_Z - corridorEndZ;
-  const COUNT = useMemo(() => Math.max(40, Math.round(BASE_COUNT * scale)), [scale]);
+  const COUNT = useMemo(() => Math.max(16, Math.round(BASE_COUNT * scale)), [scale]);
 
   const { positions, speeds } = useMemo(() => {
     const positions = new Float32Array(COUNT * 3);
@@ -57,12 +57,12 @@ export default function Particles({ scale = 1 }: { scale?: number }) {
       </bufferGeometry>
       <pointsMaterial
         map={sprite}
-        size={0.08}
+        size={0.065}
         sizeAttenuation
         transparent
         depthWrite={false}
         blending={THREE.AdditiveBlending}
-        opacity={0.7}
+        opacity={0.55}
       />
     </points>
   );

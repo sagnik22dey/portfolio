@@ -1,16 +1,8 @@
-import { ArrowUpRight, Users } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play, Users } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import { useReveal } from '../hooks/useReveal';
 import { projects, type Project } from '../data/portfolio';
-
-const categoryOrder = [
-  'Backend / Infra',
-  'AI / ML',
-  'AI / Computer Vision',
-  'Full-Stack Web',
-  'Full-Stack',
-  'Frontend / UI',
-] as const;
 
 /** Live App / GitHub buttons for a project when present. */
 function ProjectLinks({ p }: { p: Project }) {
@@ -83,7 +75,7 @@ function FeaturedCard({ p }: { p: Project }) {
 /** Standard grid card for non-featured projects. */
 function ProjectCard({ p }: { p: Project }) {
   return (
-    <article data-reveal className="paper-card paper-card-hover overflow-hidden flex flex-col">
+    <article className="paper-card paper-card-hover overflow-hidden flex flex-col w-full">
       {p.image && (
         <div className="aspect-[16/10] overflow-hidden border-b-2 border-ink bg-paper-200">
           <img
@@ -122,14 +114,137 @@ function ProjectCard({ p }: { p: Project }) {
   );
 }
 
+/** Auto-advancing, snap-scrolling carousel for the non-flagship projects, with manual controls. */
+function ProjectCarousel({ items }: { items: Project[] }) {
+  const track = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const goTo = useCallback(
+    (i: number) => {
+      const el = track.current;
+      if (!el) return;
+      const n = (i + items.length) % items.length;
+      const card = el.children[n] as HTMLElement | undefined;
+      if (card) el.scrollTo({ left: card.offsetLeft - el.offsetLeft, behavior: 'smooth' });
+    },
+    [items.length]
+  );
+
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    const onScroll = () => {
+      const kids = Array.from(el.children) as HTMLElement[];
+      let best = 0;
+      let bestDist = Infinity;
+      kids.forEach((k, i) => {
+        const d = Math.abs(k.offsetLeft - el.offsetLeft - el.scrollLeft);
+        if (d < bestDist) {
+          bestDist = d;
+          best = i;
+        }
+      });
+      setActive(best);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = window.setInterval(() => {
+      const el = track.current;
+      if (!el) return;
+      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
+      goTo(atEnd ? 0 : active + 1);
+    }, 4500);
+    return () => window.clearInterval(id);
+  }, [paused, active, goTo]);
+
+  return (
+    <div
+      data-reveal
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="More projects"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+    >
+      <div className="flex items-end justify-between gap-4 mb-5">
+        <h3 className="font-hand text-3xl text-ink">More builds</h3>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold tracking-[0.2em] text-ink-faint tabular-nums mr-1">
+            {String(active + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
+          </span>
+          <button
+            type="button"
+            aria-label={paused ? 'Resume auto-play' : 'Pause auto-play'}
+            onClick={() => setPaused((p) => !p)}
+            className="grid h-10 w-10 place-items-center rounded-full border-2 border-ink bg-paper-50 shadow-sketch-sm transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+          >
+            {paused ? <Play size={15} /> : <Pause size={15} />}
+          </button>
+          <button
+            type="button"
+            aria-label="Previous project"
+            onClick={() => goTo(active - 1)}
+            className="grid h-10 w-10 place-items-center rounded-full border-2 border-ink bg-paper-50 shadow-sketch-sm transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            type="button"
+            aria-label="Next project"
+            onClick={() => goTo(active + 1)}
+            className="grid h-10 w-10 place-items-center rounded-full border-2 border-ink bg-ink text-paper-50 shadow-sketch-sm transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      </div>
+
+      <div
+        ref={track}
+        className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map((p, i) => (
+          <div
+            key={p.title}
+            className="snap-start shrink-0 basis-[88%] sm:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-16px)] flex"
+            aria-roledescription="slide"
+            aria-label={`${i + 1} of ${items.length}: ${p.title}`}
+          >
+            <ProjectCard p={p} />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-3 flex justify-center gap-1.5" role="tablist" aria-label="Choose project">
+        {items.map((p, i) => (
+          <button
+            key={p.title}
+            type="button"
+            role="tab"
+            aria-selected={i === active}
+            aria-label={`Show ${p.title}`}
+            onClick={() => goTo(i)}
+            className={`h-2 rounded-full transition-all duration-300 ${i === active ? 'w-7 bg-accent' : 'w-2 bg-ink/25 hover:bg-ink/50'}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Projects() {
   const scope = useReveal<HTMLElement>('#projects [data-reveal]');
 
   const featured = projects.filter((p) => p.featured);
   const rest = projects.filter((p) => !p.featured);
-  const groups = categoryOrder
-    .map((cat) => ({ cat, items: rest.filter((p) => p.category === cat) }))
-    .filter((g) => g.items.length > 0);
 
   return (
     <section id="projects" ref={scope} className="section relative">
@@ -157,18 +272,7 @@ export default function Projects() {
         </div>
       )}
 
-      {groups.map((g) => (
-        <div key={g.cat} className="mb-12">
-          <h3 data-reveal className="font-hand text-3xl text-ink mb-5">
-            {g.cat}
-          </h3>
-          <div className="grid md:grid-cols-2 gap-6">
-            {g.items.map((p) => (
-              <ProjectCard key={p.title} p={p} />
-            ))}
-          </div>
-        </div>
-      ))}
+      {rest.length > 0 && <ProjectCarousel items={rest} />}
     </section>
   );
 }

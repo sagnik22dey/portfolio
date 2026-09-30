@@ -1,5 +1,6 @@
+import { FileText, Mail } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
-import { about } from '../data/portfolio';
+import { about, personal } from '../data/portfolio';
 
 export default function About() {
   const scope = useReveal<HTMLElement>('#about [data-reveal]');
@@ -14,6 +15,20 @@ export default function About() {
         </h2>
       </div>
 
+      <div data-reveal className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+        {about.stats.map((s) => (
+          <div
+            key={s.label}
+            className="paper-card paper-card-hover p-5 flex flex-col justify-between min-h-[110px]"
+          >
+            <div className="font-serif text-4xl font-semibold text-accent">{s.value}</div>
+            <div className="text-xs text-ink-faint uppercase tracking-wider mt-2 font-medium">
+              {s.label}
+            </div>
+          </div>
+        ))}
+      </div>
+
       <div className="mt-10 grid md:grid-cols-5 gap-8 items-start">
         <div
           data-reveal
@@ -24,38 +39,30 @@ export default function About() {
           ))}
         </div>
 
-        <div className="md:col-span-2 space-y-4">
-          <div
-            data-reveal
-            className="paper-card p-3 border-2 border-ink shadow-sketch"
-          >
-            <div className="aspect-[4/3] overflow-hidden bg-paper-200 border border-ink/20 relative">
-              <img
-                src="/images/profile_image.webp"
-                alt="Sagnik Dey"
-                className="w-full h-full object-cover object-top"
-              />
-            </div>
-            <div className="mt-2 text-center text-[10px] font-mono tracking-widest text-ink-faint uppercase">
-              STUDIO PORTRAIT :: SAGNIK DEY
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            {about.stats.map((s) => (
-              <div
-                key={s.label}
-                data-reveal
-                className="paper-card paper-card-hover p-5 flex flex-col justify-between min-h-[120px]"
-              >
-                <div className="font-serif text-4xl font-semibold text-accent">{s.value}</div>
-                <div className="text-xs text-ink-faint uppercase tracking-wider mt-2 font-medium">
-                  {s.label}
-                </div>
+        <aside data-reveal className="md:col-span-2 paper-card p-6" aria-label="At a glance">
+          <h3 className="font-hand text-3xl text-accent -rotate-1">at a glance</h3>
+          <dl className="mt-4 divide-y-2 divide-dashed divide-ink/15">
+            {[
+              ['Role', personal.title],
+              ['Based in', personal.location],
+              ['Focus', 'Full-stack · AI/ML · Quality engineering'],
+              ['Open to', personal.availability.replace(/^Open to /, '')],
+            ].map(([k, v]) => (
+              <div key={k} className="py-3 grid grid-cols-[88px_1fr] gap-3">
+                <dt className="text-[11px] uppercase tracking-[0.18em] text-ink-faint font-semibold pt-1">{k}</dt>
+                <dd className="font-serif text-lg text-ink leading-snug">{v}</dd>
               </div>
             ))}
+          </dl>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a href={personal.resumeUrl} target="_blank" rel="noreferrer" className="btn-primary !py-2 !px-5 text-sm">
+              <FileText size={15} /> Résumé
+            </a>
+            <a href={`mailto:${personal.email}`} className="btn-ghost !py-2 !px-5 text-sm">
+              <Mail size={15} /> Email me
+            </a>
           </div>
-        </div>
+        </aside>
       </div>
     </section>
   );

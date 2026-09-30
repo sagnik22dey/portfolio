@@ -8,9 +8,9 @@ export type TierSettings = {
 };
 
 const SETTINGS: Record<PerfTier, TierSettings> = {
-  HIGH: { dpr: [1, 1.5], antialias: true, postFx: true, particleScale: 0.8 },
-  MEDIUM: { dpr: [1, 1.25], antialias: true, postFx: true, particleScale: 0.5 },
-  LOW: { dpr: [0.85, 1], antialias: false, postFx: false, particleScale: 0.2 },
+  HIGH: { dpr: [1, 1.5], antialias: true, postFx: true, particleScale: 0.35 },
+  MEDIUM: { dpr: [1, 1.25], antialias: true, postFx: true, particleScale: 0.2 },
+  LOW: { dpr: [0.85, 1], antialias: false, postFx: false, particleScale: 0.1 },
 };
 
 /** Detect a starting performance tier from device capabilities. */
