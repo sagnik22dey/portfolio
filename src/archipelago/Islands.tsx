@@ -9,6 +9,7 @@ import {
 import { OutlineContext } from './outline';
 import { flightLock } from './useFlight';
 import ProjectCards, { ProjectPedestal } from './ProjectCards';
+import Portrait from './Portrait';
 import { geom, makeLabel } from './paper';
 import { skills } from '../data/portfolio';
 
@@ -74,9 +75,10 @@ export default function Islands({ isletCount, cardCount, activeProject, onPickPr
     <group>
       <Island def={about} onPick={onPickIsland}>
         <PaperHouse />
+        <Portrait position={[1.35, 0, 0.55]} />
         <Trees radius={about.radius} seed={about.seed} count={5} />
-        <Flag position={[1.5, 0, 0.9]} />
-        <Sign text="About" sub="who I am" position={[1.3, 3.0, 0.9]} />
+        <Flag position={[-2.0, 0, 1.0]} />
+        <Sign text="About" sub="who I am" position={[-0.6, 3.2, 0.2]} />
       </Island>
 
       <Island def={proj} onPick={onPickIsland}>

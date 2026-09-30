@@ -33,7 +33,18 @@ function AboutPanel() {
   return (
     <div className="isle-card max-w-md">
       <p className="section-eyebrow">About</p>
-      <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-ink">Quality-first engineer</h2>
+      <div className="flex items-center gap-3">
+        <img
+          src="/images/portrait_color.webp"
+          alt="Portrait of Sagnik Dey"
+          width={56}
+          height={70}
+          decoding="async"
+          className="h-14 w-14 shrink-0 rounded-full border-2 border-ink object-cover object-top"
+        />
+        <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-ink">Quality-first engineer</h2>
+      </div>
+      <p className="mt-2 font-hand text-base text-ink-faint">tap the easel on the island to paint my portrait</p>
       <p data-scrollable className="mt-3 max-h-[28vh] overflow-y-auto text-sm text-ink-soft leading-relaxed pr-1">
         {lead}
       </p>
