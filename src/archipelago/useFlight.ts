@@ -16,6 +16,9 @@ type Options = {
 };
 
 const MAX = stops.length - 1;
+
+/** Shared flags set by the project ring: while dragging, horizontal swipes must not move the camera. */
+export const flightLock = { ring: false, dragging: false, dragEnd: 0 };
 const tmp = {
   a: new THREE.Vector3(),
   b: new THREE.Vector3(),
@@ -72,9 +75,11 @@ export function useFlight({ enabled, onStop, register, onProgress }: Options) {
       if ((e.target as HTMLElement)?.closest?.('[data-scrollable]')) return;
       const y = e.touches[0].clientY;
       const x = e.touches[0].clientX;
-      const d = Math.abs(touchY - y) > Math.abs(touchX - x) ? touchY - y : touchX - x;
+      const horizontal = Math.abs(touchX - x) > Math.abs(touchY - y);
+      const d = horizontal ? touchX - x : touchY - y;
       touchY = y;
       touchX = x;
+      if (flightLock.dragging || (flightLock.ring && horizontal)) return;
       nudge(d * 0.006);
     };
     const onKey = (e: KeyboardEvent) => {

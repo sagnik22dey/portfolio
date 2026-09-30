@@ -74,8 +74,15 @@
     background: rgba(22, 20, 18, 0.95);
   }
   .isle-card {
-    @apply relative max-h-[50vh] overflow-y-auto rounded-[18px] border-2 border-ink bg-paper-50 p-5 shadow-sketch sm:max-h-none sm:overflow-visible sm:p-7;
+    @apply relative max-h-[42vh] overflow-y-auto overflow-x-hidden rounded-[18px] border-2 border-ink bg-paper-50/95 p-4 shadow-sketch sm:max-h-none sm:overflow-visible sm:bg-paper-50 sm:p-7;
     overscroll-behavior: contain;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
   .isle-card::before {
     content: '';
@@ -94,6 +101,11 @@
   }
   .isle-enter {
     animation: isleIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .isle-flip {
+    animation: isleFlip 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: 50% 50%;
+    backface-visibility: hidden;
   }
   .hearth-radial {
     background: radial-gradient(circle at 50% 40%, rgba(217, 119, 6, 0.14) 0%, rgba(18, 19, 22, 0.85) 55%, #121316 100%);
@@ -157,6 +169,11 @@
   to { transform: translate3d(40px, -8px, 0); }
 }
 
+@keyframes isleFlip {
+  from { opacity: 0; transform: perspective(900px) rotateY(-70deg) translateX(-12px); }
+  to { opacity: 1; transform: perspective(900px) rotateY(0) translateX(0); }
+}
+
 @keyframes isleIn {
   from { opacity: 0; transform: translateY(18px) rotate(-0.6deg); }
   to { opacity: 1; transform: translateY(0) rotate(0); }
@@ -167,7 +184,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .isle-enter, .paper-cloud { animation: none; }
+  .isle-enter, .isle-flip, .paper-cloud { animation: none; }
 }
 
 .reveal-up {

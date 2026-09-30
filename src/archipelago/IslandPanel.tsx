@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Copy, ExternalLink, Mail } from 'lucide-react';
 import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { about, experiences, personal, projects, skills } from '../data/portfolio';
@@ -49,13 +49,36 @@ function AboutPanel() {
   );
 }
 
-/** Projects island panel: detail for the selected card, with prev / next controls. */
+/** Projects island panel: swipeable detail card for the selected project plus a draggable thumbnail strip. */
 function ProjectsPanel({ project, setProject }: { project: number; setProject: (i: number) => void }) {
   const p = projects[project];
   const n = projects.length;
   const thumb = thumbFor(p.image);
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const strip = useRef<HTMLUListElement>(null);
+  const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
+
+  useEffect(() => {
+    const el = strip.current?.children[project] as HTMLElement | undefined;
+    el?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }, [project]);
+
   return (
-    <article className="isle-card max-w-md">
+    <article
+      className="isle-card max-w-md touch-pan-y"
+      onPointerDown={(e) => {
+        swipe.current = { x: e.clientX, y: e.clientY };
+      }}
+      onPointerUp={(e) => {
+        const s = swipe.current;
+        swipe.current = null;
+        if (!s || drag.current) return;
+        const dx = e.clientX - s.x;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(e.clientY - s.y) * 1.5) {
+          setProject((project + (dx < 0 ? 1 : -1) + n) % n);
+        }
+      }}
+    >
       <div className="flex items-center justify-between gap-3">
         <p className="section-eyebrow !mb-0">Project {String(project + 1).padStart(2, '0')} / {n}</p>
         <div className="flex gap-2">
@@ -67,6 +90,7 @@ function ProjectsPanel({ project, setProject }: { project: number; setProject: (
           </button>
         </div>
       </div>
+      <div key={project} className="isle-flip">
       {thumb && (
         <img
           src={thumb}
@@ -75,7 +99,8 @@ function ProjectsPanel({ project, setProject }: { project: number; setProject: (
           height={286}
           loading="lazy"
           decoding="async"
-          className="mt-3 aspect-[16/9] w-full rounded-lg border-2 border-ink/80 object-cover"
+          draggable={false}
+          className="mt-3 aspect-[16/9] w-full select-none rounded-lg border-2 border-ink/80 object-cover"
         />
       )}
       <h2 className="mt-3 font-serif text-2xl sm:text-3xl font-semibold text-ink">{p.title}</h2>
@@ -83,11 +108,58 @@ function ProjectsPanel({ project, setProject }: { project: number; setProject: (
       <p data-scrollable className="mt-2 max-h-[18vh] overflow-y-auto text-sm text-ink-soft leading-relaxed pr-1">
         {p.description}
       </p>
+      </div>
       <ul className="mt-3 flex flex-wrap gap-1.5">
         {p.tech.slice(0, 6).map((t) => (
           <li key={t} className="chip">{t}</li>
         ))}
       </ul>
+      <ul
+        ref={strip}
+        aria-label="All projects"
+        className="no-scrollbar mt-4 flex cursor-grab snap-x gap-2 overflow-x-auto overflow-y-hidden pb-1 active:cursor-grabbing"
+        onPointerDown={(e) => {
+          if (e.pointerType !== 'mouse' || !strip.current) return;
+          drag.current = { x: e.clientX, left: strip.current.scrollLeft, moved: false };
+        }}
+        onPointerMove={(e) => {
+          const d = drag.current;
+          if (!d || !strip.current) return;
+          if (Math.abs(e.clientX - d.x) > 4) d.moved = true;
+          strip.current.scrollLeft = d.left - (e.clientX - d.x);
+        }}
+        onPointerUp={() => {
+          window.setTimeout(() => {
+            drag.current = null;
+          }, 0);
+        }}
+        onPointerLeave={() => {
+          drag.current = null;
+        }}
+      >
+        {projects.map((q, i) => {
+          const t = thumbFor(q.image);
+          return (
+            <li key={q.title} className="shrink-0 snap-center">
+              <button
+                onClick={() => {
+                  if (!drag.current?.moved) setProject(i);
+                }}
+                aria-label={`Show project ${q.title}`}
+                aria-current={i === project ? 'true' : undefined}
+                className={`block h-12 w-20 overflow-hidden rounded-md border-2 transition ${i === project ? 'border-accent -translate-y-0.5 shadow-sketch' : 'border-ink/40 opacity-75 hover:opacity-100'}`}
+              >
+                {t ? (
+                  <img src={t} alt="" width={80} height={48} loading="lazy" decoding="async" draggable={false} className="h-full w-full object-cover" />
+                ) : (
+                  <span className="grid h-full place-items-center bg-paper-200 text-[10px] text-ink-soft">{q.title}</span>
+                )}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="mt-1 font-hand text-sm text-ink-faint">swipe the card or drag the ring to flip projects</p>
       <div className="mt-4 flex flex-wrap gap-2">
         {p.github && (
           <a href={p.github} target="_blank" rel="noreferrer" className="btn-ghost !px-4 !py-2 text-sm">
@@ -110,6 +182,7 @@ function StudioPanel() {
   return (
     <div className="isle-card max-w-md">
       <p className="section-eyebrow">Studio</p>
+      <h2 className="mb-3 font-serif text-3xl font-semibold text-ink">Skills &amp; experience</h2>
       <div role="tablist" className="flex gap-2">
         {(['skills', 'experience'] as const).map((t) => (
           <button

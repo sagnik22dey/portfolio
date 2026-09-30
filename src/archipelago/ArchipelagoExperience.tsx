@@ -17,6 +17,8 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
   const [project, setProject] = useState(0);
   const [ready, setReady] = useState(false);
   const [visible, setVisible] = useState(true);
+  const [isPortrait, setIsPortrait] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640);
+  const [collapsed, setCollapsed] = useState(false);
   const api = useRef<FlightApi | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
   const settings = settingsFor(tier);
@@ -45,8 +47,13 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
     return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
 
+  useEffect(() => {
+    const onResize = () => setIsPortrait(window.innerWidth < 640);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   const current = stops[stop];
-  const isPortrait = typeof window !== 'undefined' && window.innerWidth < 640;
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-[#faf1e1]">
@@ -87,39 +94,53 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
           Sagnik<span className="text-accent">.</span>
         </a>
         <button onClick={onExit} className="pointer-events-auto btn-ghost !px-4 !py-2 text-xs sm:text-sm">
-          Classic view
+          2D classic view
         </button>
       </header>
 
-      <main className="pointer-events-none fixed inset-0 z-10 flex items-end px-3 pb-24 sm:items-center sm:px-10 sm:pb-0">
+      <main className="pointer-events-none fixed inset-0 z-10 flex items-end px-3 pb-20 sm:items-center sm:px-10 sm:pb-0">
         <section
           key={current.id}
           aria-label={current.label}
-          data-scrollable={isPortrait ? '' : undefined}
+          data-scrollable={isPortrait && !collapsed ? '' : undefined}
           className="isle-enter pointer-events-auto w-full sm:w-auto"
         >
-          <IslandPanel
-            stop={current.id}
-            project={project}
-            setProject={pickProject}
-            onNext={() => api.current?.step(1)}
-          />
+          {isPortrait && (
+            <button
+              onClick={() => setCollapsed((c) => !c)}
+              aria-expanded={!collapsed}
+              className="mx-auto mb-2 flex items-center gap-2 rounded-full border-2 border-ink bg-paper-50 px-4 py-1.5 text-xs font-medium text-ink shadow-sketch"
+            >
+              {collapsed ? `Show ${current.label} details` : 'Hide panel · view the island'}
+            </button>
+          )}
+          <div className={collapsed && isPortrait ? 'hidden' : ''}>
+            <IslandPanel
+              stop={current.id}
+              project={project}
+              setProject={pickProject}
+              onNext={() => api.current?.step(1)}
+            />
+          </div>
         </section>
       </main>
 
-      <nav aria-label="Islands" className="fixed inset-x-0 bottom-3 z-20 flex justify-center px-3">
-        <div className="relative flex max-w-full items-center gap-1 overflow-x-auto rounded-full border-2 border-ink bg-paper-50 p-1 shadow-sketch">
-          {stops.map((s, i) => (
-            <button
-              key={s.id}
-              onClick={() => onStop(i)}
-              aria-current={i === stop ? 'true' : undefined}
-              className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition sm:px-4 sm:text-sm ${i === stop ? 'bg-ink text-paper-50' : 'text-ink-soft hover:text-accent'}`}
-            >
-              {s.label}
-            </button>
-          ))}
-          <div className="pointer-events-none absolute inset-x-4 -bottom-[3px] h-[3px] overflow-hidden rounded-full">
+      <nav aria-label="Islands" className="fixed inset-x-0 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-20 flex justify-center px-2">
+        <div className="relative overflow-hidden rounded-full border-2 border-ink bg-paper-50 shadow-sketch">
+          <ul className="no-scrollbar flex max-w-[calc(100vw-1rem)] items-center gap-0.5 overflow-x-auto overflow-y-hidden p-1">
+            {stops.map((s, i) => (
+              <li key={s.id} className="shrink-0">
+                <button
+                  onClick={() => onStop(i)}
+                  aria-current={i === stop ? 'true' : undefined}
+                  className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-xs font-medium transition sm:px-4 sm:text-sm ${i === stop ? 'bg-ink text-paper-50' : 'text-ink-soft hover:text-accent'}`}
+                >
+                  {s.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="pointer-events-none absolute inset-x-5 bottom-0 h-[3px] overflow-hidden rounded-full">
             <div ref={barRef} className="h-full w-full origin-left scale-x-0 bg-accent" />
           </div>
         </div>

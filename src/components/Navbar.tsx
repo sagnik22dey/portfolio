@@ -10,7 +10,7 @@ const links = [
   { href: '#contact', label: 'Contact' },
 ];
 
-export default function Navbar() {
+export default function Navbar({ onEnter3D }: { onEnter3D?: (() => void) | null }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -45,9 +45,16 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <a href="#contact" className="hidden md:inline-flex btn-primary !px-5 !py-2 text-sm">
-          Let's talk
-        </a>
+        <div className="hidden md:flex items-center gap-2">
+          {onEnter3D && (
+            <button onClick={onEnter3D} className="btn-ghost !px-4 !py-2 text-sm">
+              Back to the clouds
+            </button>
+          )}
+          <a href="#contact" className="btn-primary !px-5 !py-2 text-sm">
+            Let's talk
+          </a>
+        </div>
 
         <button
           className="md:hidden p-2 text-ink"
@@ -78,6 +85,19 @@ export default function Navbar() {
                   </a>
                 </li>
               ))}
+              {onEnter3D && (
+                <li className="mt-2">
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      onEnter3D();
+                    }}
+                    className="btn-ghost w-full justify-center !py-2.5 text-sm"
+                  >
+                    Back to the clouds (3D islands)
+                  </button>
+                </li>
+              )}
               <li className="mt-2">
                 <a
                   href="#contact"

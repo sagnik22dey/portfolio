@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 let grain: THREE.CanvasTexture | null = null;
 const materials = new Map<string, THREE.Material>();
@@ -45,10 +46,69 @@ export function glowMat(color: string): THREE.MeshBasicMaterial {
   return m;
 }
 
-/** Release every shared material and the grain texture (called when the experience unmounts). */
+/** Cached back-face ink material used for the inverted-hull outlines. */
+export function inkMat(): THREE.MeshBasicMaterial {
+  const hit = materials.get('ink');
+  if (hit) return hit as THREE.MeshBasicMaterial;
+  const m = new THREE.MeshBasicMaterial({ color: '#2b2620', side: THREE.BackSide });
+  materials.set('ink', m);
+  return m;
+}
+
+type GeoKind = 'box' | 'cyl' | 'cone' | 'ico' | 'oct' | 'torus' | 'sphere';
+const geos = new Map<string, THREE.BufferGeometry>();
+
+/** Cached primitive geometry keyed by kind + args, shared across every landmark. */
+export function geom(kind: GeoKind, ...args: number[]): THREE.BufferGeometry {
+  const key = `${kind}:${args.join(',')}`;
+  const hit = geos.get(key);
+  if (hit) return hit;
+  let g: THREE.BufferGeometry;
+  const a = args;
+  switch (kind) {
+    case 'box': g = new THREE.BoxGeometry(a[0], a[1], a[2]); break;
+    case 'cyl': g = new THREE.CylinderGeometry(a[0], a[1], a[2], a[3] ?? 8, 1, false, a[4] ?? 0, a[5] ?? Math.PI * 2); break;
+    case 'cone': g = new THREE.ConeGeometry(a[0], a[1], a[2] ?? 8); break;
+    case 'ico': g = new THREE.IcosahedronGeometry(a[0], a[1] ?? 0); break;
+    case 'oct': g = new THREE.OctahedronGeometry(a[0], 0); break;
+    case 'torus': g = new THREE.TorusGeometry(a[0], a[1], a[2] ?? 6, a[3] ?? 16); break;
+    case 'sphere': g = new THREE.SphereGeometry(a[0], a[1] ?? 10, a[2] ?? 8, 0, Math.PI * 2, 0, a[3] ?? Math.PI); break;
+  }
+  geos.set(key, g);
+  return g;
+}
+
+const hulls = new Map<string, THREE.BufferGeometry>();
+
+/** Inflated copy of a geometry along smoothed normals, rendered back-face in ink for a paper-cutout outline. */
+export function inkHull(geo: THREE.BufferGeometry, thickness: number): THREE.BufferGeometry {
+  const key = `${geo.uuid}:${thickness}`;
+  const hit = hulls.get(key);
+  if (hit) return hit;
+  const src = new THREE.BufferGeometry();
+  src.setAttribute('position', geo.attributes.position.clone());
+  if (geo.index) src.setIndex(geo.index.clone());
+  const merged = mergeVertices(src, 1e-3);
+  src.dispose();
+  merged.computeVertexNormals();
+  const pos = merged.attributes.position as THREE.BufferAttribute;
+  const nor = merged.attributes.normal as THREE.BufferAttribute;
+  for (let i = 0; i < pos.count; i++) {
+    pos.setXYZ(i, pos.getX(i) + nor.getX(i) * thickness, pos.getY(i) + nor.getY(i) * thickness, pos.getZ(i) + nor.getZ(i) * thickness);
+  }
+  merged.deleteAttribute('normal');
+  hulls.set(key, merged);
+  return merged;
+}
+
+/** Release every shared material, geometry and the grain texture (called when the experience unmounts). */
 export function disposePaper(): void {
   materials.forEach((m) => m.dispose());
   materials.clear();
+  geos.forEach((g) => g.dispose());
+  geos.clear();
+  hulls.forEach((g) => g.dispose());
+  hulls.clear();
   grain?.dispose();
   grain = null;
 }

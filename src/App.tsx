@@ -16,7 +16,7 @@ const ArchipelagoExperience = lazy(() => import('./archipelago/ArchipelagoExperi
 const BOOT_FLAG = 'arch-booting';
 const FAIL_FLAG = 'arch-failed';
 
-/** True when the 3D view must be skipped: reduced motion, no WebGL, or a previous 3D boot crashed the tab. */
+/** True when the 3D view should not auto-start: reduced motion or a previous 3D boot crashed the tab. */
 function prefersClassic(): boolean {
   if (typeof window === 'undefined') return true;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
@@ -26,15 +26,21 @@ function prefersClassic(): boolean {
     sessionStorage.setItem(FAIL_FLAG, '1');
     return true;
   }
+  return false;
+}
+
+/** True when the browser can create a WebGL context at all. */
+function supportsWebGL(): boolean {
+  if (typeof window === 'undefined') return false;
   try {
     const c = document.createElement('canvas');
     const gl = (c.getContext('webgl2') || c.getContext('webgl')) as WebGLRenderingContext | null;
-    if (!gl) return true;
+    if (!gl) return false;
     gl.getExtension('WEBGL_lose_context')?.loseContext();
   } catch {
-    return true;
+    return false;
   }
-  return false;
+  return true;
 }
 
 function ClassicSite({ onEnter3D }: { onEnter3D: (() => void) | null }) {
@@ -42,13 +48,14 @@ function ClassicSite({ onEnter3D }: { onEnter3D: (() => void) | null }) {
   return (
     <div className="relative min-h-screen">
       <BackgroundEffects />
-      <Navbar />
+      <Navbar onEnter3D={onEnter3D} />
       {onEnter3D && (
         <button
           onClick={onEnter3D}
-          className="btn-primary fixed bottom-5 right-5 z-40 !px-5 !py-2.5 text-sm"
+          aria-label="Back to the clouds: open the 3D islands view"
+          className="btn-primary fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 z-[60] !px-5 !py-2.5 text-sm shadow-sketch sm:right-5"
         >
-          Fly to the islands
+          <span aria-hidden="true">☁</span> Back to the clouds
         </button>
       )}
       <main>
@@ -81,9 +88,10 @@ function ClassicSiteSeo() {
 }
 
 function initialView(): { mode: 'corridor' | 'classic'; canRun3D: boolean } {
-  const classic = prefersClassic();
+  const webgl = supportsWebGL();
+  const classic = !webgl || prefersClassic();
   const saved = localStorage.getItem('view-mode');
-  return { mode: saved === 'classic' || classic ? 'classic' : 'corridor', canRun3D: !classic };
+  return { mode: saved === 'classic' || classic ? 'classic' : 'corridor', canRun3D: webgl };
 }
 
 function App() {
@@ -97,22 +105,27 @@ function App() {
   };
   const toCorridor = () => {
     localStorage.setItem('view-mode', 'corridor');
+    sessionStorage.removeItem(FAIL_FLAG);
+    window.scrollTo(0, 0);
     setMode('corridor');
   };
   const onFail = () => {
     sessionStorage.setItem(FAIL_FLAG, '1');
     localStorage.removeItem(BOOT_FLAG);
-    setCanRun3D(false);
+    setCanRun3D(supportsWebGL());
     setMode('classic');
   };
 
   useEffect(() => {
     if (mode !== 'corridor') return;
     localStorage.setItem(BOOT_FLAG, '1');
-    const t = window.setTimeout(() => localStorage.removeItem(BOOT_FLAG), 8000);
+    const clear = () => localStorage.removeItem(BOOT_FLAG);
+    const t = window.setTimeout(clear, 8000);
+    window.addEventListener('pagehide', clear);
     return () => {
       window.clearTimeout(t);
-      localStorage.removeItem(BOOT_FLAG);
+      window.removeEventListener('pagehide', clear);
+      clear();
     };
   }, [mode]);
 

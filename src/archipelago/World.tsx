@@ -56,8 +56,8 @@ export default function World({ settings, enabled, activeProject, onStop, onPick
 
   return (
     <>
-      <hemisphereLight args={['#fff4e2', '#c9a27e', 1.25]} />
-      <directionalLight position={[8, 14, 10]} intensity={1.35} color="#fff1dc" />
+      <hemisphereLight args={['#fff4e2', '#b88a64', 1.15]} />
+      <directionalLight position={[8, 14, 10]} intensity={1.6} color="#fff1dc" />
       <SkyDome />
       <Islands
         isletCount={settings.islets}
@@ -65,6 +65,7 @@ export default function World({ settings, enabled, activeProject, onStop, onPick
         activeProject={activeProject}
         onPickProject={onPickProject}
         onPickIsland={(i) => onStop(i)}
+        outlines={settings.outlines}
       />
       <Clouds count={settings.clouds} />
       <PaperPlanes count={settings.planes} />
