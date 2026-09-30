@@ -70,7 +70,6 @@ export default function Portrait({ position = [1.7, 0, 0.3] as [number, number, 
   const [pinned, setPinned] = useState(false);
   const frame = useRef<THREE.Group>(null);
   const mat = useRef<THREE.ShaderMaterial>(null);
-  const brush = useRef<THREE.Group>(null);
   const [uniforms] = useState(() => ({
     uSketch: { value: null as THREE.Texture | null },
     uColor: { value: null as THREE.Texture | null },
@@ -98,20 +97,12 @@ export default function Portrait({ position = [1.7, 0, 0.3] as [number, number, 
       const want = hover || pinned ? 1 : auto;
       const cur = m.uniforms.uProgress.value as number;
       m.uniforms.uProgress.value = cur + (want - cur) * (1 - Math.pow(0.02, delta));
-      if (brush.current) {
-        const p = m.uniforms.uProgress.value as number;
-        const painting = p > 0.02 && p < 0.98;
-        brush.current.visible = painting;
-        const a = t * 3.2;
-        brush.current.position.set(Math.cos(a) * p * 0.45, 0.12 + Math.sin(a * 1.3) * p * 0.5, 0.18);
-        brush.current.rotation.z = -0.6 + Math.sin(a) * 0.3;
-      }
     }
     const g = frame.current;
     if (g) {
       const k = 1 - Math.pow(0.01, delta);
-      g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, -0.35 + state.pointer.x * 0.25, k);
-      g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, -0.08 - state.pointer.y * 0.08, k);
+      g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, -0.25 + state.pointer.x * 0.15, k);
+      g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, -0.05 - state.pointer.y * 0.05, k);
       g.position.y = 1.55 + Math.sin(t * 0.9) * 0.05;
       const s = hover ? 1.06 : 1;
       g.scale.setScalar(THREE.MathUtils.lerp(g.scale.x, s, k));
@@ -122,10 +113,9 @@ export default function Portrait({ position = [1.7, 0, 0.3] as [number, number, 
 
   return (
     <group position={position}>
-      <Part geo={geom('box', 0.06, 2.2, 0.06)} color="#8a6a4a" position={[-0.42, 1.0, 0.1]} rotation={[0.12, 0, 0.14]} ink={0.015} />
-      <Part geo={geom('box', 0.06, 2.2, 0.06)} color="#8a6a4a" position={[0.42, 1.0, 0.1]} rotation={[0.12, 0, -0.14]} ink={0.015} />
-      <Part geo={geom('box', 0.06, 2.0, 0.06)} color="#8a6a4a" position={[0, 0.95, -0.35]} rotation={[-0.3, 0, 0]} ink={0.015} />
-      <Part geo={geom('box', 1.1, 0.07, 0.18)} color="#b8906a" position={[0, 0.78, 0.2]} ink={0.015} />
+      <Part geo={geom('box', 0.06, 1.7, 0.06)} color="#8a6a4a" position={[-0.4, 0.85, -0.2]} rotation={[-0.1, 0, 0.12]} ink={0.015} />
+      <Part geo={geom('box', 0.06, 1.7, 0.06)} color="#8a6a4a" position={[0.4, 0.85, -0.2]} rotation={[-0.1, 0, -0.12]} ink={0.015} />
+      <Part geo={geom('box', 1.1, 0.07, 0.18)} color="#b8906a" position={[0, 0.6, 0.1]} ink={0.015} />
       <group
         ref={frame}
         position={[0, 1.55, 0.18]}
@@ -151,10 +141,6 @@ export default function Portrait({ position = [1.7, 0, 0.3] as [number, number, 
         </mesh>
         <mesh position={[0.4, H / 2 + 0.08, 0.06]} rotation={[0, 0, -0.2]} geometry={geom('box', 0.36, 0.11, 0.01)} material={paperMat('#e8763f')} />
         <mesh position={[-0.42, -H / 2 - 0.06, 0.06]} rotation={[0, 0, 0.15]} geometry={geom('box', 0.3, 0.1, 0.01)} material={paperMat('#e8763f')} />
-        <group ref={brush} visible={false}>
-          <mesh position={[0, 0.22, 0]} geometry={geom('cyl', 0.018, 0.024, 0.42, 5)} material={paperMat('#8a6a4a')} />
-          <mesh position={[0, 0.0, 0]} geometry={geom('cone', 0.035, 0.1, 5)} material={paperMat('#c2410c')} rotation={[Math.PI, 0, 0]} />
-        </group>
       </group>
       <Part geo={geom('box', 0.5, 0.07, 0.36)} color="#fdfcf8" position={[0.75, 0.04, 0.5]} rotation={[0, 0.4, 0]} ink={0.015} />
       {['#c2410c', '#6b7c5f', '#f3c87a', '#3b6fb6'].map((c, i) => (
