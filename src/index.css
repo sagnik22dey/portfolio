@@ -220,8 +220,39 @@ html.dark .sky-backdrop {
   .isle-card::before { display: block; }
 }
 
+.hoshi-bob { animation: hoshiBob 3.2s ease-in-out infinite; transform-origin: 50% 60%; }
+.hoshi-blink { animation: hoshiBlink 5s infinite; transform-origin: 50% 72px; transform-box: view-box; }
+.hoshi-twinkle { animation: hoshiTwinkle 2.4s ease-in-out infinite; transform-origin: 102px 28px; transform-box: view-box; }
+.hoshi-talk { animation: hoshiTalk 0.28s ease-in-out infinite alternate; transform-origin: 60px 88px; transform-box: view-box; }
+.hoshi-panel { animation: popIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hoshi-launcher { animation: popIn 0.4s 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hoshi-dots span { display: inline-block; animation: hoshiDot 1s infinite; margin-right: 2px; }
+.hoshi-dots span:nth-child(2) { animation-delay: 0.15s; }
+.hoshi-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes hoshiBob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-3px) rotate(2deg); }
+}
+@keyframes hoshiBlink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+@keyframes hoshiTwinkle {
+  0%, 100% { transform: scale(0.7) rotate(0deg); opacity: 0.6; }
+  50% { transform: scale(1.1) rotate(45deg); opacity: 1; }
+}
+@keyframes hoshiTalk {
+  from { transform: scaleY(0.4); }
+  to { transform: scaleY(1); }
+}
+@keyframes hoshiDot {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .isle-enter, .isle-flip, .paper-cloud { animation: none; }
+  .isle-enter, .isle-flip, .paper-cloud, .hoshi-bob, .hoshi-blink, .hoshi-twinkle, .hoshi-talk, .hoshi-panel, .hoshi-launcher, .hoshi-dots span { animation: none; }
 }
 
 .reveal-up {

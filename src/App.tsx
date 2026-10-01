@@ -10,8 +10,15 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import BackgroundEffects from './components/BackgroundEffects';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
+import type { NavTarget } from './assistant/engine';
 
 const ArchipelagoExperience = lazy(() => import('./archipelago/ArchipelagoExperience'));
+const Assistant = lazy(() => import('./assistant/Assistant'));
+
+/** Smooth-scrolls the classic page to the section the assistant points at. */
+function scrollToSection(t: NavTarget) {
+  document.getElementById(t.section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
 const BOOT_FLAG = 'arch-booting';
 const FAIL_FLAG = 'arch-failed';
@@ -68,6 +75,9 @@ function ClassicSite({ onEnter3D }: { onEnter3D: (() => void) | null }) {
         <Contact />
       </main>
       <Footer />
+      <Suspense fallback={null}>
+        <Assistant onNavigate={scrollToSection} />
+      </Suspense>
     </div>
   );
 }

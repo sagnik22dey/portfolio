@@ -9,6 +9,17 @@ import { detectTier, lowerTier, settingsFor, type PerfTier } from './quality';
 import type { FlightApi } from './useFlight';
 import { setMaxAnisotropy } from './paper';
 import ThemeToggle from '../components/ThemeToggle';
+import Assistant from '../assistant/Assistant';
+import type { NavTarget } from '../assistant/engine';
+
+const SECTION_STOP: Record<NavTarget['section'], string> = {
+  about: 'about',
+  projects: 'projects',
+  skills: 'studio',
+  experience: 'studio',
+  education: 'studio',
+  contact: 'contact',
+};
 
 type Props = { onExit: () => void; onFail: () => void };
 
@@ -45,6 +56,14 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
     api.current?.goTo(idx);
   }, []);
   const downgrade = useCallback(() => setTier((t) => lowerTier(t)), []);
+  const assistantNav = useCallback((t: NavTarget) => {
+    if (t.section === 'projects' && t.project !== undefined) {
+      pickProject(t.project);
+      return;
+    }
+    const idx = stops.findIndex((s) => s.id === SECTION_STOP[t.section]);
+    if (idx >= 0) goToStop(idx);
+  }, [goToStop, pickProject]);
 
   useEffect(() => {
     const onVis = () => setVisible(document.visibilityState === 'visible');
@@ -154,6 +173,7 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
         </div>
       </nav>
 
+      {ready && <Assistant onNavigate={assistantNav} placement="islands" />}
       <div
         aria-hidden="true"
         className={`pointer-events-none fixed inset-0 z-30 grid place-items-center bg-paper-100 transition-opacity duration-700 ${ready ? 'opacity-0' : 'opacity-100'}`}
