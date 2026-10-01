@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const links = [
   { href: '#about', label: 'About' },
   { href: '#skills', label: 'Skills' },
   { href: '#experience', label: 'Experience' },
   { href: '#projects', label: 'Projects' },
+  { href: '#education', label: 'Education' },
   { href: '#contact', label: 'Contact' },
 ];
 
@@ -46,6 +48,7 @@ export default function Navbar({ onEnter3D }: { onEnter3D?: (() => void) | null 
         </ul>
 
         <div className="hidden md:flex items-center gap-2">
+          <ThemeToggle />
           {onEnter3D && (
             <button onClick={onEnter3D} className="btn-ghost !px-4 !py-2 text-sm">
               Back to the clouds
@@ -56,13 +59,16 @@ export default function Navbar({ onEnter3D }: { onEnter3D?: (() => void) | null 
           </a>
         </div>
 
-        <button
-          className="md:hidden p-2 text-ink"
-          aria-label="Toggle menu"
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="md:hidden flex items-center gap-1">
+          <ThemeToggle />
+          <button
+            className="p-2 text-ink"
+            aria-label="Toggle menu"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </nav>
 
       <AnimatePresence>

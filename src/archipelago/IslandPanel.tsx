@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Copy, ExternalLink, Mail } from 'lucide-react';
 import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa';
-import { about, experiences, personal, projects, skills } from '../data/portfolio';
+import { about, education, experiences, personal, projects, skills } from '../data/portfolio';
 import { thumbFor, type StopId } from './data';
 
 type PanelProps = {
@@ -187,15 +187,15 @@ function ProjectsPanel({ project, setProject }: { project: number; setProject: (
   );
 }
 
-/** Studio island panel: skills grouped by category and the experience timeline. */
+/** Studio island panel: skills grouped by category, the experience timeline and education. */
 function StudioPanel() {
-  const [tab, setTab] = useState<'skills' | 'experience'>('skills');
+  const [tab, setTab] = useState<'skills' | 'experience' | 'education'>('skills');
   return (
     <div className="isle-card max-w-md">
       <p className="section-eyebrow">Studio</p>
-      <h2 className="mb-3 font-serif text-3xl font-semibold text-ink">Skills &amp; experience</h2>
-      <div role="tablist" className="flex gap-2">
-        {(['skills', 'experience'] as const).map((t) => (
+      <h2 className="mb-3 font-serif text-3xl font-semibold text-ink">Skills, experience &amp; education</h2>
+      <div role="tablist" className="flex flex-wrap gap-2">
+        {(['skills', 'experience', 'education'] as const).map((t) => (
           <button
             key={t}
             role="tab"
@@ -221,13 +221,23 @@ function StudioPanel() {
               </li>
             ))}
           </ul>
-        ) : (
+        ) : tab === 'experience' ? (
           <ol className="space-y-4 border-l-2 border-ink/30 pl-4">
             {experiences.map((e) => (
               <li key={e.role + e.period}>
                 <h3 className="font-serif text-lg font-semibold text-ink">{e.role}</h3>
                 <p className="text-xs uppercase tracking-wider text-accent">{e.company} · {e.period}</p>
                 <p className="mt-1 text-sm text-ink-soft leading-relaxed">{e.description}</p>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <ol className="space-y-4 border-l-2 border-ink/30 pl-4">
+            {education.map((e) => (
+              <li key={e.degree}>
+                <h3 className="font-serif text-lg font-semibold text-ink">{e.degree}</h3>
+                <p className="text-sm font-medium text-accent">{e.institution}</p>
+                <p className="mt-0.5 text-xs uppercase tracking-wider text-ink-faint">{e.affiliation} · {e.period} · {e.location}</p>
               </li>
             ))}
           </ol>
@@ -251,9 +261,15 @@ function ContactPanel() {
   };
   return (
     <div className="isle-card max-w-md">
-      <p className="section-eyebrow">Contact</p>
-      <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-ink">Let's build something</h2>
-      <p className="mt-2 text-sm text-ink-soft">{personal.availability}.</p>
+      <p className="section-eyebrow">Let's connect</p>
+      <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-ink">
+        Got a cool idea? <span className="text-accent">Let's build it.</span>
+      </h2>
+      <p className="mt-2 text-sm text-ink-soft leading-relaxed">
+        Open to freelance projects, Full-Stack and AI Engineering roles. The inbox is always open — whether it's a
+        role, a collab, or just to say hi.
+      </p>
+      <p className="mt-1 text-xs text-ink-faint">Based in {personal.location} · working remotely worldwide</p>
       <div className="mt-4 flex flex-wrap gap-2">
         <a href={`mailto:${personal.email}`} className="btn-primary !px-4 !py-2 text-sm">
           <Mail size={16} /> Email Sagnik

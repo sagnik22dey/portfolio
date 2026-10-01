@@ -145,7 +145,7 @@ export function useFlight({ enabled, onStop, register, onProgress }: Options) {
 
     onProgress?.(p / MAX);
     const nearest = Math.round(p);
-    if (Math.abs(p - nearest) < 0.08 && nearest !== lastStop.current) {
+    if (Math.abs(p - nearest) < 0.08 && nearest !== lastStop.current && nearest === Math.round(target.current)) {
       lastStop.current = nearest;
       onStop(nearest);
     }

@@ -3,11 +3,42 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --paper-50: 253 252 248;
+    --paper-100: 250 246 236;
+    --paper-200: 243 236 217;
+    --paper-300: 233 223 196;
+    --paper-400: 217 203 166;
+    --ink: 43 38 32;
+    --ink-soft: 74 66 58;
+    --ink-faint: 122 111 98;
+    --accent: 194 65 12;
+    --accent-soft: 232 118 63;
+    --accent-clay: 168 86 58;
+    --shadow: 43 38 32;
+    color-scheme: light;
+  }
+  html.dark {
+    --paper-50: 30 33 48;
+    --paper-100: 22 25 37;
+    --paper-200: 38 42 60;
+    --paper-300: 52 57 80;
+    --paper-400: 70 76 104;
+    --ink: 240 230 210;
+    --ink-soft: 208 198 180;
+    --ink-faint: 154 146 134;
+    --accent: 249 140 74;
+    --accent-soft: 255 176 112;
+    --accent-clay: 240 150 110;
+    --shadow: 6 7 12;
+    color-scheme: dark;
+  }
   html {
     scroll-behavior: smooth;
   }
   body {
     @apply bg-paper-100 text-ink font-sans antialiased selection:bg-accent/20 selection:text-ink;
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
   * {
     -webkit-tap-highlight-color: transparent;
@@ -17,11 +48,11 @@
     height: 11px;
   }
   ::-webkit-scrollbar-track {
-    background: #f3ecd9;
+    background: rgb(var(--paper-200));
   }
   ::-webkit-scrollbar-thumb {
-    background: #c2410c;
-    border: 3px solid #f3ecd9;
+    background: rgb(var(--accent));
+    border: 3px solid rgb(var(--paper-200));
     border-radius: 8px;
   }
 }
@@ -45,7 +76,7 @@
     @apply bg-paper-50 border-2 border-ink rounded-[14px] shadow-sketch;
   }
   .paper-card-hover {
-    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-[5px_5px_0_0_rgba(43,38,32,0.9)];
+    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-[5px_5px_0_0_rgb(var(--shadow)/0.9)];
   }
   .btn-primary {
     @apply inline-flex items-center gap-2 px-6 py-3 rounded-full bg-ink text-paper-50 font-medium border-2 border-ink shadow-sketch-sm hover:-translate-y-0.5 hover:shadow-sketch active:translate-y-0 active:shadow-none transition-all duration-150;
@@ -120,10 +151,10 @@
 }
 
 .paper-texture {
-  background-color: #faf6ec;
+  background-color: rgb(var(--paper-100));
   background-image:
-    radial-gradient(circle at 20% 30%, rgba(217,203,166,0.25) 0%, transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(217,203,166,0.2) 0%, transparent 40%);
+    radial-gradient(circle at 20% 30%, rgb(var(--paper-400) / 0.25) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgb(var(--paper-400) / 0.2) 0%, transparent 40%);
 }
 
 .noise::before {
@@ -132,7 +163,7 @@
   inset: 0;
   pointer-events: none;
   opacity: 0.35;
-  background-image: repeating-linear-gradient(0deg, rgba(43,38,32,0.035) 0 1px, transparent 1px 3px);
+  background-image: repeating-linear-gradient(0deg, rgb(var(--ink) / 0.035) 0 1px, transparent 1px 3px);
 }
 
 .sky-backdrop {
@@ -141,13 +172,19 @@
     radial-gradient(ellipse at 85% 30%, rgba(233,201,168,0.55) 0%, transparent 50%),
     linear-gradient(180deg, #faf1e1 0%, #faf6ec 60%, #f3ecd9 100%);
 }
+html.dark .sky-backdrop {
+  background:
+    radial-gradient(ellipse at 20% 12%, rgba(90,96,160,0.45) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 30%, rgba(249,140,74,0.12) 0%, transparent 50%),
+    linear-gradient(180deg, #121527 0%, #161925 60%, #1e2130 100%);
+}
 
 .paper-cloud {
   position: absolute;
   width: 220px;
   height: 64px;
   border-radius: 999px;
-  background: #fdfcf8;
+  background: rgb(var(--paper-50));
   opacity: 0.6;
   animation: cloudDrift 42s ease-in-out infinite alternate;
   will-change: transform;
@@ -158,7 +195,7 @@
   position: absolute;
   bottom: 22px;
   border-radius: 999px;
-  background: #fdfcf8;
+  background: rgb(var(--paper-50));
 }
 .paper-cloud::before { left: 34px; width: 80px; height: 64px; }
 .paper-cloud::after { left: 96px; width: 100px; height: 80px; }

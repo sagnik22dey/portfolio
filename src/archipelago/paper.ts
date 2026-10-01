@@ -3,6 +3,7 @@ import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 let grain: THREE.CanvasTexture | null = null;
 const materials = new Map<string, THREE.Material>();
+export const modelMaterials = new Map<string, THREE.Material>();
 
 /** Shared 128px paper-fibre grain texture, tinted by each material's colour. */
 export function paperGrain(): THREE.CanvasTexture {
@@ -13,7 +14,7 @@ export function paperGrain(): THREE.CanvasTexture {
   const ctx = c.getContext('2d')!;
   const img = ctx.createImageData(size, size);
   for (let i = 0; i < img.data.length; i += 4) {
-    const v = 232 + Math.random() * 23;
+    const v = 240 + Math.random() * 15;
     img.data[i] = v;
     img.data[i + 1] = v;
     img.data[i + 2] = v - 4;
@@ -105,6 +106,8 @@ export function inkHull(geo: THREE.BufferGeometry, thickness: number): THREE.Buf
 export function disposePaper(): void {
   materials.forEach((m) => m.dispose());
   materials.clear();
+  modelMaterials.forEach((m) => m.dispose());
+  modelMaterials.clear();
   geos.forEach((g) => g.dispose());
   geos.clear();
   hulls.forEach((g) => g.dispose());
@@ -144,30 +147,64 @@ export function foldGeometry(geo: THREE.BufferGeometry, amount: number, seed: nu
 
 type LabelOpts = { width?: number; height?: number; font?: string; bg?: string; fg?: string; sub?: string };
 
-/** Draw a small paper label (ink border + serif text) into a canvas texture. */
-export function makeLabel(text: string, opts: LabelOpts = {}): THREE.CanvasTexture {
+let maxAniso = 4;
+
+/** Record the renderer's max anisotropy so canvas/image textures stay crisp at grazing angles. */
+export function setMaxAnisotropy(n: number): void {
+  maxAniso = Math.max(1, Math.min(8, n));
+}
+
+/** Anisotropy level to use for crisp text and image textures. */
+export function anisotropy(): number {
+  return maxAniso;
+}
+
+const SCALE = 2;
+
+function drawLabel(c: HTMLCanvasElement, text: string, opts: LabelOpts) {
   const { width = 512, height = 160, bg = '#fdfcf8', fg = '#2b2620', sub } = opts;
   const font = opts.font ?? '600 76px "Cormorant Garamond", Georgia, serif';
-  const c = document.createElement('canvas');
-  c.width = width;
-  c.height = height;
   const ctx = c.getContext('2d')!;
+  ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, width, height);
   ctx.strokeStyle = fg;
   ctx.lineWidth = 6;
   ctx.strokeRect(8, 8, width - 16, height - 16);
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(18, 18, width - 36, height - 36);
   ctx.fillStyle = fg;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = font;
-  ctx.fillText(text, width / 2, sub ? height * 0.42 : height / 2, width - 40);
+  ctx.fillText(text, width / 2, sub ? height * 0.42 : height / 2, width - 48);
   if (sub) {
-    ctx.fillStyle = '#c2410c';
-    ctx.font = '500 30px Inter, system-ui, sans-serif';
-    ctx.fillText(sub, width / 2, height * 0.76, width - 40);
+    ctx.fillStyle = '#b8380a';
+    ctx.font = '600 28px Inter, system-ui, sans-serif';
+    ctx.fillText(sub.toUpperCase(), width / 2, height * 0.76, width - 60);
   }
+}
+
+/** Draw a paper label (ink border + serif text) into a 2x canvas texture, redrawn once web fonts finish loading. */
+export function makeLabel(text: string, opts: LabelOpts = {}): THREE.CanvasTexture {
+  const { width = 512, height = 160 } = opts;
+  const c = document.createElement('canvas');
+  c.width = width * SCALE;
+  c.height = height * SCALE;
+  drawLabel(c, text, opts);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = maxAniso;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  const fonts = (document as Document & { fonts?: FontFaceSet }).fonts;
+  if (fonts) {
+    Promise.all([fonts.load('600 76px "Cormorant Garamond"'), fonts.load('600 28px Inter')])
+      .then(() => {
+        drawLabel(c, text, opts);
+        tex.needsUpdate = true;
+      })
+      .catch(() => undefined);
+  }
   return tex;
 }

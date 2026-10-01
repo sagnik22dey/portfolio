@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { projects } from '../data/portfolio';
 import { thumbFor } from './data';
 import { flightLock } from './useFlight';
-import { geom, paperMat } from './paper';
+import { anisotropy, geom, paperMat } from './paper';
 import { Part } from './Landmarks';
 
 const loader = new THREE.TextureLoader();
@@ -33,7 +33,7 @@ function Card({ index, angle, radius, active, onPick, dragged }: CardProps) {
     let loaded: THREE.Texture | null = null;
     loader.load(url, (t) => {
       t.colorSpace = THREE.SRGBColorSpace;
-      t.anisotropy = 2;
+      t.anisotropy = anisotropy();
       loaded = t;
       if (alive) setTex(t);
       else t.dispose();

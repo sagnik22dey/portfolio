@@ -7,6 +7,8 @@ import IslandPanel from './IslandPanel';
 import { stops } from './data';
 import { detectTier, lowerTier, settingsFor, type PerfTier } from './quality';
 import type { FlightApi } from './useFlight';
+import { setMaxAnisotropy } from './paper';
+import ThemeToggle from '../components/ThemeToggle';
 
 type Props = { onExit: () => void; onFail: () => void };
 
@@ -31,6 +33,9 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
   }, []);
   const onStop = useCallback((i: number) => {
     setStop((s) => (s === i ? s : i));
+  }, []);
+  const goToStop = useCallback((i: number) => {
+    setStop(i);
     api.current?.goTo(i);
   }, []);
   const pickProject = useCallback((i: number) => {
@@ -56,16 +61,16 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
   const current = stops[stop];
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-[#faf1e1]">
+    <div className="fixed inset-0 overflow-hidden bg-paper-100">
       <Canvas
         className="!fixed inset-0"
         dpr={settings.dpr}
         frameloop={visible ? 'always' : 'never'}
         camera={{ position: [-2, 16, 16], fov: 50, near: 0.1, far: 400 }}
         gl={{ antialias: settings.antialias, powerPreference: 'default', alpha: false, stencil: false, depth: true }}
-        onCreated={({ gl, scene }) => {
+        onCreated={({ gl }) => {
           gl.toneMapping = THREE.NoToneMapping;
-          scene.fog = new THREE.Fog('#f7e6cf', 30, 110);
+          setMaxAnisotropy(gl.capabilities.getMaxAnisotropy());
           const el = gl.domElement;
           el.addEventListener('webglcontextlost', (e) => {
             e.preventDefault();
@@ -74,7 +79,6 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
           requestAnimationFrame(() => setReady(true));
         }}
       >
-        <color attach="background" args={['#faf1e1']} />
         <PerformanceMonitor onDecline={downgrade} onFallback={downgrade} flipflops={2} />
         <Suspense fallback={null}>
           <World
@@ -82,6 +86,7 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
             enabled
             activeProject={current.id === 'projects' ? project : null}
             onStop={onStop}
+            onGoTo={goToStop}
             onPickProject={pickProject}
             register={register}
             onProgress={onProgress}
@@ -93,9 +98,12 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
         <a href="#top" className="pointer-events-auto font-hand text-3xl leading-none text-ink">
           Sagnik<span className="text-accent">.</span>
         </a>
-        <button onClick={onExit} className="pointer-events-auto btn-ghost !px-4 !py-2 text-xs sm:text-sm">
-          2D classic view
-        </button>
+        <div className="pointer-events-auto flex items-center gap-2">
+          <ThemeToggle />
+          <button onClick={onExit} className="btn-ghost !px-4 !py-2 text-xs sm:text-sm">
+            2D classic view
+          </button>
+        </div>
       </header>
 
       <main className="pointer-events-none fixed inset-0 z-10 flex items-end px-3 pb-20 sm:items-center sm:px-10 sm:pb-0">
@@ -131,7 +139,7 @@ export default function ArchipelagoExperience({ onExit, onFail }: Props) {
             {stops.map((s, i) => (
               <li key={s.id} className="shrink-0">
                 <button
-                  onClick={() => onStop(i)}
+                  onClick={() => goToStop(i)}
                   aria-current={i === stop ? 'true' : undefined}
                   className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-xs font-medium transition sm:px-4 sm:text-sm ${i === stop ? 'bg-ink text-paper-50' : 'text-ink-soft hover:text-accent'}`}
                 >

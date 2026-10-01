@@ -12,7 +12,7 @@ export const personal = {
   name: 'Sagnik Dey',
   title: 'AI-Augmented Full-Stack Engineer',
   subtitle:
-    'Building intelligent, production-grade web apps — React · TypeScript · Python · LLMs · Computer Vision — backed by SDET-grade quality engineering.',
+    'Building intelligent, production-grade web apps end to end — React · TypeScript · Node.js · Python/FastAPI · Rust — with LLMs, RAG pipelines and computer vision built in, shipped on Docker and CI/CD, and backed by SDET-grade quality engineering with 2000+ automated tests.',
   location: 'Kolkata, India',
   email: 'sagnik22dey@gmail.com',
   linkedin: 'https://www.linkedin.com/in/sagnik-dey-712a4618b',
@@ -421,10 +421,17 @@ export const projects: Project[] = [
 
 export const education = [
   {
-    degree: 'Bachelor of Technology (B.Tech)',
+    degree: 'Bachelor of Technology (B.Tech) — Computer Science & Engineering (CSE)',
     institution: 'B.P. Poddar Institute of Management & Technology',
     affiliation: 'MAKAUT',
     location: 'Kolkata, India',
     period: 'Aug 2019 — May 2023',
+  },
+  {
+    degree: 'Master of Business Administration (MBA) — Marketing',
+    institution: 'Vivekananda Global University',
+    affiliation: 'VGU Online',
+    location: 'Jaipur, Rajasthan',
+    period: 'Jun 2024 — Jun 2026',
   },
 ];

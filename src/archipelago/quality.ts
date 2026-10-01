@@ -7,12 +7,13 @@ export type TierSettings = {
   planes: number;
   islets: number;
   outlines: boolean;
+  models: 'full' | 'lite';
 };
 
 const SETTINGS: Record<PerfTier, TierSettings> = {
-  HIGH: { dpr: [1, 1.75], antialias: true, clouds: 26, planes: 6, islets: 7, outlines: true },
-  MEDIUM: { dpr: [1, 1.4], antialias: true, clouds: 16, planes: 4, islets: 5, outlines: true },
-  LOW: { dpr: [0.8, 1], antialias: false, clouds: 9, planes: 2, islets: 3, outlines: false },
+  HIGH: { dpr: [1, 2], antialias: true, clouds: 26, planes: 6, islets: 7, outlines: true, models: 'full' },
+  MEDIUM: { dpr: [1, 1.75], antialias: true, clouds: 16, planes: 4, islets: 5, outlines: true, models: 'full' },
+  LOW: { dpr: [1, 1.35], antialias: true, clouds: 9, planes: 2, islets: 3, outlines: false, models: 'lite' },
 };
 
 /** True for phones and tablets, including iPadOS which reports a desktop user agent. */

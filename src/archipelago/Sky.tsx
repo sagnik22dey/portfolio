@@ -7,7 +7,7 @@ import { seeded } from './data';
 const PUFFS_PER_CLOUD = 4;
 
 /** Every cloud puff in the sky as ONE instanced draw call; drifts slowly on the CPU. */
-export function Clouds({ count }: { count: number }) {
+export function Clouds({ count, color = '#fdfcf8' }: { count: number; color?: string }) {
   const ref = useRef<THREE.InstancedMesh>(null);
   const geo = useMemo(() => new THREE.IcosahedronGeometry(1, 0), []);
   const clouds = useMemo(() => {
@@ -61,7 +61,7 @@ export function Clouds({ count }: { count: number }) {
   return (
     <instancedMesh
       ref={ref}
-      args={[geo, paperMat('#fdfcf8'), count * PUFFS_PER_CLOUD]}
+      args={[geo, paperMat(color), count * PUFFS_PER_CLOUD]}
       frustumCulled={false}
     />
   );

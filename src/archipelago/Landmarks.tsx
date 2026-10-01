@@ -32,7 +32,7 @@ export function Part({ geo, color, position, rotation, scale, ink = 0.03, glow =
 type RockProps = { radius: number; seed: number; top?: string; side?: string; decor?: boolean };
 
 /** Floating folded-paper landmass: grassy cap, soil band, crumpled rock cone and a few drifting chunks. */
-export function IslandRock({ radius, seed, top = '#9fbf7f', side = '#e9dfc4', decor = false }: RockProps) {
+export function IslandRock({ radius, seed, top = '#7db35f', side = '#e3c9a0', decor = false }: RockProps) {
   const g = useMemo(() => {
     const cap = foldGeometry(new THREE.CylinderGeometry(radius, radius * 0.96, 0.5, 11, 1), radius * 0.05, seed, true);
     const soil = foldGeometry(new THREE.CylinderGeometry(radius * 0.97, radius * 0.84, 0.55, 11, 1), radius * 0.06, seed + 4);
@@ -48,7 +48,7 @@ export function IslandRock({ radius, seed, top = '#9fbf7f', side = '#e9dfc4', de
       ? Array.from({ length: 9 }, (_, i) => {
           const a = r() * Math.PI * 2;
           const d = radius * (0.35 + r() * 0.55);
-          return { p: [Math.cos(a) * d, 0, Math.sin(a) * d] as V3, stone: i % 3 === 0, tone: ['#f3c87a', '#e8763f', '#fdfcf8'][i % 3], s: 0.6 + r() * 0.6 };
+          return { p: [Math.cos(a) * d, 0, Math.sin(a) * d] as V3, stone: i % 3 === 0, tone: ['#f7b733', '#ef5b3a', '#f48fb1'][i % 3], s: 0.6 + r() * 0.6 };
         })
       : [];
     return { cap, soil, base, chunks, bits };
@@ -63,7 +63,7 @@ export function IslandRock({ radius, seed, top = '#9fbf7f', side = '#e9dfc4', de
   return (
     <group>
       <Part geo={g.cap} color={top} position={[0, -0.25, 0]} ink={ink} />
-      <Part geo={g.soil} color="#c9a27e" position={[0, -0.77, 0]} ink={ink} />
+      <Part geo={g.soil} color="#b9784a" position={[0, -0.77, 0]} ink={ink} />
       <Part geo={g.base} color={side} position={[0, -1.04 - radius * 0.85, 0]} ink={ink} />
       {g.chunks.map((c, i) => (
         <Part key={i} geo={geom('ico', 1, 0)} color={side} position={c.p} scale={c.s} ink={0.12} />
@@ -94,7 +94,7 @@ export function Trees({ radius, seed, count = 4 }: { radius: number; seed: numbe
         z: Math.sin(a) * d,
         s: 0.6 + r() * 0.5,
         round: r() > 0.6,
-        tone: r() > 0.5 ? '#5f7a52' : '#86a36f',
+        tone: r() > 0.5 ? '#3f8a4a' : '#68aa52',
       };
     });
   }, [radius, seed, count]);
@@ -107,7 +107,7 @@ export function Trees({ radius, seed, count = 4 }: { radius: number; seed: numbe
           {t.round ? (
             <>
               <Part geo={geom('ico', 0.5, 0)} color={t.tone} position={[0, 0.95, 0]} ink={0.035} />
-              <Part geo={geom('ico', 0.3, 0)} color="#a7c08a" position={[0.25, 1.2, 0.15]} ink={0.03} />
+              <Part geo={geom('ico', 0.3, 0)} color="#8cc46a" position={[0.25, 1.2, 0.15]} ink={0.03} />
             </>
           ) : (
             <>
@@ -179,7 +179,7 @@ export function Flag({ color = '#c2410c', position = [0, 0, 0] as V3 }) {
   );
 }
 
-const TONES = ['#c2410c', '#e8763f', '#6b7c5f', '#a8563a', '#d9cba6', '#86997a'];
+const TONES = ['#d9480f', '#f08c3a', '#3f8a4a', '#2f6fd6', '#f2b52c', '#8e44ad'];
 
 /** Stacked-block skill towers, each crowned with a spinning paper gem — Studio island centrepiece. */
 export function SkillTowers({ heights }: { heights: number[] }) {
@@ -301,7 +301,31 @@ export function Desk({ position = [0, 0, 0] as V3 }) {
   );
 }
 
-const beamMat = new THREE.MeshBasicMaterial({ color: '#ffd98a', transparent: true, opacity: 0.28, depthWrite: false, side: THREE.DoubleSide, toneMapped: false });
+const beamMat = new THREE.MeshBasicMaterial({ color: '#ffcf70', transparent: true, opacity: 0.32, depthWrite: false, side: THREE.DoubleSide, toneMapped: false, blending: THREE.AdditiveBlending, fog: false });
+
+/** Rotating translucent double beam + lamp halo, sized to sit on top of the GLB lighthouse. */
+export function LighthouseBeam({ position = [0, 0, 0] as V3, night = false }: { position?: V3; night?: boolean }) {
+  const beam = useRef<THREE.Group>(null);
+  const beamGeo = useMemo(() => {
+    const g = new THREE.ConeGeometry(0.9, 6, 16, 1, true);
+    g.translate(0, -3, 0);
+    g.rotateZ(Math.PI / 2);
+    return g;
+  }, []);
+  useEffect(() => () => beamGeo.dispose(), [beamGeo]);
+  useFrame((_, d) => {
+    if (beam.current) beam.current.rotation.y += d * 0.8;
+  });
+  return (
+    <group position={position}>
+      <mesh geometry={geom('ico', 0.32, 1)} material={glowMat('#ffd37a')} />
+      <group ref={beam} scale={night ? 1.25 : 1}>
+        <mesh geometry={beamGeo} material={beamMat} />
+        <mesh geometry={beamGeo} material={beamMat} rotation={[0, Math.PI, 0]} />
+      </group>
+    </group>
+  );
+}
 
 /** Striped lighthouse on a rocky plinth with a gallery rail and a sweeping translucent beam. */
 export function Lighthouse() {
