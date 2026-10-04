@@ -229,6 +229,21 @@ html.dark .sky-backdrop {
 .hoshi-dots span { display: inline-block; animation: hoshiDot 1s infinite; margin-right: 2px; }
 .hoshi-dots span:nth-child(2) { animation-delay: 0.15s; }
 .hoshi-dots span:nth-child(3) { animation-delay: 0.3s; }
+.hoshi-spin { animation: hoshiSpin 0.8s linear infinite; }
+.hoshi-scan { position: relative; overflow: hidden; }
+.hoshi-scan::after { content: ''; position: absolute; inset: 0; width: 40%; border-radius: inherit; background: rgb(var(--accent)); animation: hoshiScan 1.1s ease-in-out infinite; }
+.hoshi-dock { animation: hoshiDockIn 0.6s 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.bot-msg-in { animation: popIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes hoshiSpin { to { transform: rotate(360deg); } }
+@keyframes hoshiScan {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+@keyframes hoshiDockIn {
+  from { opacity: 0; transform: translate3d(0, 40px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
 
 @keyframes hoshiBob {
   0%, 100% { transform: translateY(0) rotate(-2deg); }
@@ -252,7 +267,7 @@ html.dark .sky-backdrop {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .isle-enter, .isle-flip, .paper-cloud, .hoshi-bob, .hoshi-blink, .hoshi-twinkle, .hoshi-talk, .hoshi-panel, .hoshi-launcher, .hoshi-dots span { animation: none; }
+  .isle-enter, .isle-flip, .paper-cloud, .hoshi-bob, .hoshi-blink, .hoshi-twinkle, .hoshi-talk, .hoshi-panel, .hoshi-launcher, .hoshi-dots span, .hoshi-spin, .hoshi-scan::after, .hoshi-dock, .bot-msg-in { animation: none; }
 }
 
 .reveal-up {
