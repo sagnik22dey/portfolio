@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from 'rea
 import Mascot from './Mascot';
 import { answer, greeting, type NavTarget, type Reply } from './engine';
 
-const HoshiDock = lazy(() => import('./HoshiDock'));
+const NanahoshiDock = lazy(() => import('./NanahoshiDock'));
 
 const SEARCH_STEPS = ["Opening Sagnik's notes", 'Searching projects, skills & experience', 'Writing your answer'];
 
@@ -26,7 +26,7 @@ type Props = { onNavigate: (t: NavTarget) => void; placement?: 'classic' | 'isla
 
 let nextId = 1;
 
-/** Floating "Hoshi" assistant: answers questions about Sagnik strictly from portfolio data. */
+/** Floating "Nanahoshi" assistant: answers questions about Sagnik strictly from portfolio data. */
 export default function Assistant({ onNavigate, placement = 'classic' }: Props) {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>(() => [{ id: 0, from: 'bot', text: greeting.text, reply: greeting }]);
@@ -103,19 +103,19 @@ export default function Assistant({ onNavigate, placement = 'classic' }: Props) 
     <>
       {dock && (
         <Suspense fallback={null}>
-          <HoshiDock open={open} searching={typing} onOpen={openPanel} onFailed={() => setDock(false)} />
+          <NanahoshiDock open={open} searching={typing} onOpen={openPanel} onFailed={() => setDock(false)} />
         </Suspense>
       )}
 
       {!open && !dock && (
         <button
           onClick={openPanel}
-          aria-label="Ask Hoshi, the portfolio assistant"
+          aria-label="Ask Nanahoshi, the portfolio assistant"
           aria-haspopup="dialog"
           className={`hoshi-launcher group fixed z-[60] flex items-center gap-2 rounded-full border-2 border-ink bg-paper-50 py-1 pl-1 pr-3 text-sm font-medium text-ink shadow-sketch transition hover:-translate-y-0.5 ${launcherPos}`}
         >
           <Mascot className="h-10 w-10" />
-          <span className="hidden sm:inline">Ask Hoshi</span>
+          <span className="hidden sm:inline">Ask Nanahoshi</span>
           <span className="sm:hidden">Ask</span>
         </button>
       )}
@@ -125,13 +125,13 @@ export default function Assistant({ onNavigate, placement = 'classic' }: Props) 
           role="dialog"
           data-scrollable=""
           data-lenis-prevent=""
-          aria-label="Hoshi portfolio assistant"
+          aria-label="Nanahoshi portfolio assistant"
           className="hoshi-panel fixed inset-x-2 bottom-2 z-[70] flex max-h-[min(78dvh,640px)] flex-col overflow-hidden rounded-[22px] border-2 border-ink bg-paper-50 shadow-sketch sm:inset-x-auto sm:bottom-5 sm:right-5 sm:w-[24rem]"
         >
           <header className="flex items-center gap-3 border-b-2 border-ink bg-paper-200 px-3 py-2">
             <Mascot className="h-12 w-12 shrink-0" talking={typing} />
             <div className="min-w-0 flex-1">
-              <h2 className="font-hand text-2xl leading-none text-ink">Hoshi</h2>
+              <h2 className="font-hand text-2xl leading-none text-ink">Nanahoshi</h2>
               <p className="truncate text-xs text-ink-soft">Sagnik's portfolio guide · answers from this site only</p>
             </div>
             <button onClick={() => setOpen(false)} aria-label="Close assistant" className="isle-icon-btn shrink-0 text-lg leading-none">
@@ -182,10 +182,10 @@ export default function Assistant({ onNavigate, placement = 'classic' }: Props) 
               ),
             )}
             {typing && (
-              <div className="hoshi-search w-[min(92%,18rem)] overflow-hidden rounded-2xl rounded-bl-sm border-2 border-ink/80 bg-paper-100 px-3 py-2 text-sm text-ink" role="status" aria-label="Hoshi is searching">
+              <div className="hoshi-search w-[min(92%,18rem)] overflow-hidden rounded-2xl rounded-bl-sm border-2 border-ink/80 bg-paper-100 px-3 py-2 text-sm text-ink" role="status" aria-label="Nanahoshi is searching">
                 <p className="flex items-center gap-2 font-medium">
                   <span className="hoshi-spin inline-block h-3.5 w-3.5 rounded-full border-2 border-accent border-t-transparent" aria-hidden="true" />
-                  Hoshi is on her laptop…
+                  Nanahoshi is on her laptop…
                 </p>
                 <ol className="mt-2 space-y-1 text-xs">
                   {SEARCH_STEPS.map((label, i) => (

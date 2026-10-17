@@ -4,6 +4,12 @@ import viteCompression from 'vite-plugin-compression'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    host: true,
+    port: 5173,
+    strictPort: true,
+    allowedHosts: true,
+  },
   plugins: [react(), viteCompression({ threshold: 1024 })],
   build: {
     target: 'es2020',

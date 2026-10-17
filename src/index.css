@@ -221,9 +221,9 @@ html.dark .sky-backdrop {
 }
 
 .hoshi-bob { animation: hoshiBob 3.2s ease-in-out infinite; transform-origin: 50% 60%; }
-.hoshi-blink { animation: hoshiBlink 5s infinite; transform-origin: 50% 72px; transform-box: view-box; }
+.hoshi-blink { animation: hoshiBlink 5s infinite; transform-origin: 50% 64px; transform-box: view-box; }
 .hoshi-twinkle { animation: hoshiTwinkle 2.4s ease-in-out infinite; transform-origin: 102px 28px; transform-box: view-box; }
-.hoshi-talk { animation: hoshiTalk 0.28s ease-in-out infinite alternate; transform-origin: 60px 88px; transform-box: view-box; }
+.hoshi-talk { animation: hoshiTalk 0.28s ease-in-out infinite alternate; transform-origin: 60px 73px; transform-box: view-box; }
 .hoshi-panel { animation: popIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .hoshi-launcher { animation: popIn 0.4s 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .hoshi-dots span { display: inline-block; animation: hoshiDot 1s infinite; margin-right: 2px; }

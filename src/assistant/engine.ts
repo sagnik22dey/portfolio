@@ -201,7 +201,7 @@ const intents: { test: (q: string, raw: string) => boolean; reply: () => Reply }
   {
     test: (_q, raw) => any(raw, /\b(who|what) are you\b|\byour name\b|\bare you (a )?(bot|ai|human|real)\b|\bwhat can you do\b|\bhelp\b/),
     reply: () => ({
-      text: `I'm Hoshi, ${NAME}'s little star-spirit guide. I can only answer from what's published on this portfolio: his background, skills, projects, experience, education and how to reach him. If something isn't on record, I'll say so instead of guessing.`,
+      text: `I'm Nanahoshi, ${NAME}'s portfolio guide. I can only answer from what's published on this portfolio: his background, skills, projects, experience, education and how to reach him. If something isn't on record, I'll say so instead of guessing.`,
       suggestions: DEFAULT_SUGGESTIONS,
     }),
   },
@@ -310,7 +310,7 @@ export function answer(input: string): Reply {
   }
 
   if (/^(hi+|hey+|hello+|yo|hola|namaste|sup|good (morning|afternoon|evening))\b[\s!.?]*$/.test(raw)) {
-    return { text: `Hey there! I'm Hoshi. Ask me about ${NAME}'s projects, skills, experience or how to contact him.`, suggestions: DEFAULT_SUGGESTIONS };
+    return { text: `Hey there! I'm Nanahoshi. Ask me about ${NAME}'s projects, skills, experience or how to contact him.`, suggestions: DEFAULT_SUGGESTIONS };
   }
   if (/^(thanks|thank you|thx|ty|cool|great|nice|awesome|ok(ay)?)\b/.test(raw)) {
     return { text: 'Happy to help! Anything else you want to know?', suggestions: DEFAULT_SUGGESTIONS };
@@ -353,6 +353,6 @@ export function answer(input: string): Reply {
 }
 
 export const greeting: Reply = {
-  text: `Hi! I'm Hoshi, ${NAME}'s portfolio guide. I can summarize his work, point you to projects and share his public links.`,
+  text: `Hi! I'm Nanahoshi, ${NAME}'s portfolio guide. I can summarize his work, point you to projects and share his public links.`,
   suggestions: DEFAULT_SUGGESTIONS,
 };
