@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from 'rea
 import Mascot from './Mascot';
 import { answer, greeting, type NavTarget, type Reply } from './engine';
 
-const NanahoshiDock = lazy(() => import('./NanahoshiDock'));
+const NanahoshiCorner = lazy(() => import('./NanahoshiCorner'));
 
 const SEARCH_STEPS = ["Opening Sagnik's notes", 'Searching projects, skills & experience', 'Writing your answer'];
 
@@ -95,15 +95,21 @@ export default function Assistant({ onNavigate, placement = 'classic' }: Props) 
   const last = msgs[msgs.length - 1];
   const launcherPos =
     placement === 'islands'
-      ? 'right-3 top-16 sm:right-5 sm:top-auto sm:bottom-[max(1.25rem,env(safe-area-inset-bottom))]'
-      : 'right-4 bottom-[max(4.75rem,calc(env(safe-area-inset-bottom)+3.5rem))] sm:right-5';
+      ? 'right-3 bottom-[max(3.5rem,calc(env(safe-area-inset-bottom)+3rem))] sm:right-5 sm:bottom-[max(3.75rem,calc(env(safe-area-inset-bottom)+3.25rem))]'
+      : 'left-3 bottom-[max(1rem,env(safe-area-inset-bottom))] sm:left-5';
   const openPanel = () => setOpen(true);
 
   return (
     <>
       {dock && (
         <Suspense fallback={null}>
-          <NanahoshiDock open={open} searching={typing} onOpen={openPanel} onFailed={() => setDock(false)} />
+          <NanahoshiCorner
+            open={open}
+            searching={typing}
+            onOpen={openPanel}
+            placement={placement}
+            onFailed={() => setDock(false)}
+          />
         </Suspense>
       )}
 
