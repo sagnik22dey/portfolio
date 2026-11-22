@@ -202,6 +202,7 @@ export const projects: Project[] = [
     ],
     tech: ['Rust', 'Axum', 'WebRTC', 'Tokio', 'Kotlin', 'Android', 'WebSockets'],
     github: 'https://github.com/sagnik22dey/omni-cast',
+    image: '/images/sketches/omnicast.webp',
   },
   {
     title: 'YouTube Shorts Automation',
@@ -240,6 +241,7 @@ export const projects: Project[] = [
     ],
     tech: ['Python', 'LangGraph', 'LangChain', 'ChromaDB', 'Ollama (Llama 3.2)', 'Streamlit'],
     github: 'https://github.com/sagnik22dey/agentic-rag-researcher',
+    image: '/images/sketches/agentic_rag_researcher.webp',
   },
   {
     title: 'Korebi Coffee — Odoo ERP',

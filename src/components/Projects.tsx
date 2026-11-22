@@ -44,20 +44,40 @@ function MetaRow({ p }: { p: Project }) {
 function FeaturedCard({ p }: { p: Project }) {
   return (
     <article data-reveal className="paper-card paper-card-hover p-7 md:p-9 flex flex-col">
-      <MetaRow p={p} />
-      <h3 className="mt-4 font-serif text-4xl font-semibold text-ink">{p.title}</h3>
-      <p className="mt-1 text-base text-accent font-medium italic">{p.tagline}</p>
-      <p className="mt-4 text-ink-soft leading-relaxed font-serif text-lg max-w-3xl">
-        {p.description}
-      </p>
-      <ul className="mt-5 grid md:grid-cols-2 gap-x-8 gap-y-2 mb-6">
-        {p.highlights.map((h) => (
-          <li key={h} className="flex gap-3 text-ink-soft text-sm leading-relaxed">
-            <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
-            <span>{h}</span>
-          </li>
-        ))}
-      </ul>
+      <div className="grid lg:grid-cols-12 gap-8 items-start">
+        <div className={p.image ? 'lg:col-span-7 flex flex-col' : 'lg:col-span-12 flex flex-col'}>
+          <MetaRow p={p} />
+          <h3 className="mt-4 font-serif text-4xl font-semibold text-ink">{p.title}</h3>
+          <p className="mt-1 text-base text-accent font-medium italic">{p.tagline}</p>
+          <p className="mt-4 text-ink-soft leading-relaxed font-serif text-lg">
+            {p.description}
+          </p>
+          <ul className="mt-5 space-y-2 mb-6">
+            {p.highlights.map((h) => (
+              <li key={h} className="flex gap-3 text-ink-soft text-sm leading-relaxed">
+                <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
+                <span>{h}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        {p.image && (
+          <div className="lg:col-span-5 w-full">
+            <div className="relative aspect-[16/10] overflow-hidden rounded border-2 border-ink bg-paper-200 shadow-sketch-sm">
+              <img
+                src={p.image}
+                alt={`Codex sketch of ${p.title} — ${p.tagline}`}
+                loading="lazy"
+                className="w-full h-full object-cover filter contrast-[1.03] hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono tracking-wider text-ink-faint uppercase">
+              <span>PLATE · {p.title}</span>
+              <span>{p.period}</span>
+            </div>
+          </div>
+        )}
+      </div>
       <div className="mt-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-5 border-t-2 border-ink/15">
         <div className="flex flex-wrap gap-2">
           {p.tech.map((t) => (

@@ -46,11 +46,27 @@ const frameItems: FrameItem[] = [
     z: -6,
   },
   {
+    id: 'omnicast',
+    title: 'OmniCast Broadcast',
+    plate: 'PLATE 12 // WEBRTC LAN TRANSMISSION',
+    image: '/images/sketches/omnicast.webp',
+    side: 'right',
+    z: -6,
+  },
+  {
     id: 'blind-assist',
     title: 'The Blind Assist',
     plate: 'PLATE 03 // COMPUTER VISION',
     image: '/images/sketches/blind_assist.webp',
     side: 'left',
+    z: -10,
+  },
+  {
+    id: 'agentic-rag',
+    title: 'Agentic RAG Codex',
+    plate: 'PLATE 13 // CRAG FACT EVALUATION',
+    image: '/images/sketches/agentic_rag_researcher.webp',
+    side: 'right',
     z: -10,
   },
   {
