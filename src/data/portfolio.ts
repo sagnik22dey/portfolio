@@ -31,7 +31,7 @@ Off the clock: an ambivert and unapologetic anime lover who codes for the joy of
   stats: [
     { label: 'Years of Experience', value: '3+' },
     { label: 'Projects Shipped', value: '10+' },
-    { label: 'GitHub Repositories', value: '21' },
+    { label: 'GitHub Repositories', value: '22' },
     { label: 'Automated Test Cases', value: '2000+' },
   ],
 };
@@ -61,13 +61,15 @@ export const skills: SkillCategory[] = [
     icon: Brain,
     color: 'from-pink-500 to-rose-500',
     skills: [
-      'LLMs (OpenAI, Gemini)',
+      'Agentic AI / CRAG',
+      'LangGraph',
       'LangChain',
       'RAG Pipelines',
+      'LLMs (OpenAI, Gemini, Ollama)',
+      'Vector Databases (ChromaDB)',
       'Computer Vision',
       'YOLOv5',
       'Prompt Engineering',
-      'Vector Databases',
     ],
   },
   {
@@ -201,6 +203,25 @@ export const projects: Project[] = [
     tech: ['Python', 'FastAPI', 'LLMs', 'FFmpeg', 'YouTube API', 'APScheduler', 'Railway'],
     github: 'https://github.com/sagnik22dey/youtubeAutomation',
     image: '/images/sketches/shorts_automation.webp',
+  },
+  {
+    title: 'Agentic RAG Researcher',
+    tagline: 'Autonomous fact-checked research agent with self-reflection & live search fallback',
+    period: '2026',
+    category: 'AI / ML',
+    accent: 'from-violet-500 to-emerald-500',
+    featured: true,
+    description:
+      'An end-to-end Agentic AI & Corrective Retrieval-Augmented Generation (CRAG) system built with LangGraph, ChromaDB, and local Ollama. Eliminates naive RAG hallucinations through autonomous query routing, document relevance grading, live DuckDuckGo web search fallbacks, and rigorous fact-grounding checks.',
+    highlights: [
+      'Engineered a cyclic LangGraph state machine with 10 compiled nodes and conditional routing.',
+      'Implemented vector retrieval via ChromaDB with semantic embeddings and multi-document parsing.',
+      'Built automated query rewriting and live DuckDuckGo fallback for out-of-domain questions.',
+      'Developed a hallucination evaluator node strictly validating generated outputs against ground truth.',
+      'Designed a real-time Streamlit dashboard visualizing reasoning steps and verified citations.',
+    ],
+    tech: ['Python', 'LangGraph', 'LangChain', 'ChromaDB', 'Ollama (Llama 3.2)', 'Streamlit'],
+    github: 'https://github.com/sagnik22dey/agentic-rag-researcher',
   },
   {
     title: 'Korebi Coffee — Odoo ERP',
