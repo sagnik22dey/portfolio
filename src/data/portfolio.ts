@@ -31,7 +31,7 @@ Off the clock: an ambivert and unapologetic anime lover who codes for the joy of
   stats: [
     { label: 'Years of Experience', value: '3+' },
     { label: 'Projects Shipped', value: '10+' },
-    { label: 'GitHub Repositories', value: '22' },
+    { label: 'GitHub Repositories', value: '23' },
     { label: 'Automated Test Cases', value: '2000+' },
   ],
 };
@@ -54,7 +54,7 @@ export const skills: SkillCategory[] = [
     title: 'Backend',
     icon: Server,
     color: 'from-cyan-500 to-blue-500',
-    skills: ['Node.js', 'Python', 'Java', 'REST APIs', 'Express', 'Web Scraping'],
+    skills: ['Rust', 'Axum', 'Node.js', 'Python', 'Java', 'WebRTC', 'REST APIs', 'Express', 'WebSockets'],
   },
   {
     title: 'AI / ML',
@@ -184,6 +184,24 @@ export const projects: Project[] = [
     tech: ['Rust', 'Axum', 'SQLx', 'PostgreSQL', 'Next.js', 'Tailwind', 'Docker', 'Railway'],
     github: 'https://github.com/sagnik22dey/FROSTBYTE',
     image: '/images/sketches/frostbite.webp',
+  },
+  {
+    title: 'OmniCast',
+    tagline: 'Zero-internet LAN screen, audio & file streaming platform in Rust & WebRTC',
+    period: '2026',
+    category: 'Backend / Infra',
+    accent: 'from-emerald-500 to-teal-600',
+    featured: true,
+    description:
+      'A high-performance, zero-internet local area network (LAN) screen, system audio, camera, and file sharing platform providing Discord-style live streaming directly over Wi-Fi without routing any traffic through the public internet.',
+    highlights: [
+      'Engineered an Axum + Tokio Rust backend managing WebSocket signaling, mDNS LAN discovery, and embedded TLS.',
+      'Implemented peer-to-peer WebRTC mesh streaming for sub-second latency screen and system audio broadcasts.',
+      'Built a native Android companion app (Kotlin) leveraging MediaProjection and AudioPlaybackCapture APIs.',
+      'Added single-broadcaster file distribution and concurrent LAN downloads with instant QR-code mobile pairing.',
+    ],
+    tech: ['Rust', 'Axum', 'WebRTC', 'Tokio', 'Kotlin', 'Android', 'WebSockets'],
+    github: 'https://github.com/sagnik22dey/omni-cast',
   },
   {
     title: 'YouTube Shorts Automation',
